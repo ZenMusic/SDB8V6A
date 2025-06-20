@@ -1,0 +1,9 @@
+Severity	Code	Description	Project	File	Line	Suppression State
+Message		Could not find type 'AxWMPLib.AxWindowsMediaPlayer'.  Please make sure that the assembly that contains this type is referenced.  If this type is a part of your development project, make sure that the project has been successfully built using settings for your current platform or Any CPU.			0	
+
+
+Please remove the assembly AxWMPLib from your Reference folder and add it back again.
+
+Then, make sure that the correct using is located in the file. It should be added automatically but if it's missing, check to see if it solves your issue.
+
+Best regards,

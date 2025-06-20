@@ -1,0 +1,1099 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SDB6</name>
+    </assembly>
+    <members>
+        <member name="M:SymbolDB.Services.AsyncFileCopier.CopyFileAsync(System.String,System.String,System.IProgress{System.Double})">
+            <summary>
+            Copies a file asynchronously in buffered chunks, reporting progress.
+            </summary>
+            <param name="sourcePath">Path to the source file.</param>
+            <param name="destPath">Path to the destination file.</param>
+            <param name="progress">
+                Progress reporter (0.0–1.0). Pass null if you don’t need progress updates.
+            </param>
+        </member>
+        <member name="T:SymbolDB.CopyInfo">
+            <summary>
+            
+            
+            </summary>
+        </member>
+        <member name="F:SymbolDB.Description.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.Description.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.Description.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.DialogDeleteDup.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.DialogDeleteDup.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.DialogDeleteDup.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.DialogFolderAssignments.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.DialogFolderAssignments.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.DialogFolderAssignments.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.DialogFolderSelection.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.DialogFolderSelection.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.DialogFolderSelection.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.dialogHelp.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.dialogHelp.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.dialogHelp.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.TraverserDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.TraverserDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.TraverserDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.DialogParms.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.DialogParms.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.DialogParms.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.DisplayListView.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.DisplayListView.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.DisplayListView.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.DialogGetInfo.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.DialogGetInfo.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.DialogGetInfo.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.DisplayMessage.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.DisplayMessage.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.DisplayMessage.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.DisplayPreviewSet.loadB">
+            may be at the end of the file and so not all PB's on the screen have images
+        </member>
+        <member name="F:SymbolDB.DisplayPreviewSet.pbFrameWidth">
+            size of "frame around the PB " 
+        </member>
+        <member name="F:SymbolDB.DisplayPreviewSet.borderB">
+            size of "frame around the PB" 
+        </member>
+        <member name="M:SymbolDB.DisplayPreviewSet.lastStart">
+            <summary>
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            </summary>
+        </member>
+        <member name="F:SymbolDB.DisplayPreviewSet.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.DisplayPreviewSet.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.DisplayPreviewSet.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.EditNotes.prg86files">
+            
+        </member>
+        <member name="F:SymbolDB.EditNotes.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.EditNotes.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.EditNotes.InitializeComponent2b">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.ERROR.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.ERROR.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.ERROR.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.ErrorDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.ErrorDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.ErrorDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.ErrorStop.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.ErrorStop.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.ErrorStop.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.FileFunctionsDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.FileFunctionsDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.FileFunctionsDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:SymbolDB.FileFunctions">
+            <summary>
+            ///////////////////////////////////// MSDN   file functions ///////////////////////////////////////////////////
+            </summary>
+        </member>
+        <member name="M:SymbolDB.FileFunctions.renameFile2Timestamp(System.String,System.String,System.String)">
+            <summary>
+               public string renameFile2Timestamp(string filepath, string TargetDir, string newName2)
+            </summary>
+        </member>
+        <member name="M:SymbolDB.FileFunctions.renameFile(System.String,System.String)">
+            <summary>
+               public void renameFile(string TargetDir, string newName)
+            </summary>
+        </member>
+        <member name="M:SymbolDB.FileFunctions.createDirectory(System.String,System.String)">
+            <summary>
+            ///////////////////////////////////// MSDN   file functions ///////////////////////////////////////////////////
+            </summary>
+        </member>
+        <member name="M:SymbolDB.FileFunctions.directoryExists(System.String)">
+            <summary>
+               public Boolean directoryExists(string TargetDir)
+            </summary>
+        </member>
+        <member name="M:SymbolDB.FileFunctions.createDirectory(System.String)">
+            <summary>
+               public void createDirectory(string TargetDPath)
+            </summary>
+        </member>
+        <member name="M:SymbolDB.FileFunctions.CopyFolderItems(System.String,System.String)">
+            <summary>
+               public void CopyFolderItems(string sourcePath, string targetPath)
+            </summary>
+        </member>
+        <member name="M:SymbolDB.FileFunctions.MoveFile(System.String,System.String,System.String)">
+            <summary>
+               public void MoveFile(string fname, string sourceDir, string targetDir)
+            </summary>
+        </member>
+        <member name="M:SymbolDB.FileFunctions.MoveFile(System.String,System.String)">
+            <summary>
+               public void MoveFile(string sourceFile, string targetDir)
+            </summary>
+        </member>
+        <member name="M:SymbolDB.FileFunctions.MoveFileRename(System.String,System.String,System.String)">
+            <summary>
+               public void MoveFile(string sourceFile, string targetDir)
+            </summary>
+        </member>
+        <member name="M:SymbolDB.FileFunctions.MoveFolder(System.String,System.String)">
+            <summary>
+               public void MoveFolder(string sourceDir, string targetDir)
+            </summary>
+        </member>
+        <member name="M:SymbolDB.FileFunctions.deleteFile(System.String)">
+            <summary>
+            ///////////////////////////////////// MSDN   file functions ///////////////////////////////////////////////////
+            </summary>
+        </member>
+        <member name="M:SymbolDB.FileFunctions.FileDelete(System.String)">
+            <summary>
+               public void FileDelete(string fpath)
+            </summary>
+        </member>
+        <member name="M:SymbolDB.FileFunctions.Normalize(System.String)">
+            <summary>
+            ///////////////////////////////////// MSDN   file functions ///////////////////////////////////////////////////
+            </summary>
+            
+        </member>
+        <member name="M:SymbolDB.FileFunctions.CopyAll(System.IO.DirectoryInfo,System.IO.DirectoryInfo)">
+            <summary>
+               public void CopyAll(DirectoryInfo source, DirectoryInfo target)
+            </summary>
+        </member>
+        <member name="M:SymbolDB.FileFunctions.CopyFile(System.String,System.String,System.Boolean)">
+            <summary>
+            ///////////////////////////////////// MSDN   file functions ///////////////////////////////////////////////////
+            </summary>
+        </member>
+        <member name="M:SymbolDB.FileFunctions.CopyFileRename(System.String,System.String,System.String)">
+            <summary>
+            ///////////////////////////////////// MSDN   file functions ///////////////////////////////////////////////////
+            </summary>
+        </member>
+        <member name="M:SymbolDB.FileFunctions.CopyFile(System.String,System.String,System.String)">
+            <summary>
+               public void CopyFile(string fileName, string sourcePath, string targetPath)
+            </summary>
+        </member>
+        <member name="M:SymbolDB.FileFunctions.countFilesInFolder(System.String)">
+            <summary>
+            public long countFilesInFolder
+            </summary>
+            <param name="dirPath"></param>
+            <returns> long = count of files in folder</returns>
+        </member>
+        <member name="F:SymbolDB.Display1.displayMode">
+             get annotation inforamtion = new DialogGetInfo(outlineBox, outlineBounds, this, finfo);
+        </member>
+        <member name="M:SymbolDB.Display1.eraseOutline">
+            <summary>
+            ///////////////////////////////////////   Picture Box   OUTLINE Rubber Band lasso FUNCTIONS ////////////////////////////////
+            </summary>
+            
+        </member>
+        <member name="M:SymbolDB.Display1.startAnnotationOutline(System.Windows.Forms.MouseEventArgs)">
+            <summary>
+            //////////////////  ANNOTATION ---------------- ANNOTATION ---------------- ANNOTATION ---------------- ANNOTATION ----------------
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="M:SymbolDB.Display1.Display1_Resize(System.Object,System.EventArgs)">
+            <summary>
+            ///////////////////////////////////end of SELECT Rubber Band Lasso functions////
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:SymbolDB.Display1.Display1_KeyPress(System.Object,System.Windows.Forms.KeyPressEventArgs)">
+            <summary>
+            ///////////////////// KEYPRESS //////////////////////////////dmcdmc
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:SymbolDB.Display1.captureScreen(System.Drawing.Rectangle)">
+            <summary>
+            Captures the screen and displays it in the picture box. //////////////////////// CAPTURE SCREEN or SELECTION
+            </summary>
+        </member>
+        <member name="F:SymbolDB.Display1.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.Display1.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.Display1.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.DebugWindow.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.DebugWindow.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.DebugWindow.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.FileList.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.FileList.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.FileList.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.Help.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.Help.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.Help.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.HideWindow.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.HideWindow.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.HideWindow.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.KeyControl.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.KeyControl.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.KeyControl.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.MessageWindow.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.MessageWindow.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.MessageWindow.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.Movies2.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.Movies2.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.Movies.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.Movies.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.PromptContinueWindow.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.PromptContinueWindow.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.PromptContinueWindow.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.PromptData.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.PromptData.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.PromptData.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.ShowDisplay.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.ShowDisplay.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.ShowDisplay.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:SymbolDB.ImageInfo">
+            @author David McClanahan
+        </member>
+        <member name="F:SymbolDB.ImagePanel.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.ImagePanel.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.ImagePanel.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:SymbolDB.ListViewColumnSorter">
+             <summary>
+             This class is an implementation of the 'IComparer' interface.
+             </summary>
+            
+        </member>
+        <member name="F:SymbolDB.ListViewColumnSorter.ColumnToSort">
+            <summary>
+            Specifies the column to be sorted
+            </summary>
+        </member>
+        <member name="F:SymbolDB.ListViewColumnSorter.OrderOfSort">
+            <summary>
+            Specifies the order in which to sort (i.e. 'Ascending').
+            </summary>
+        </member>
+        <member name="F:SymbolDB.ListViewColumnSorter.ObjectCompare">
+            <summary>
+            Case insensitive comparer object
+            </summary>
+        </member>
+        <member name="M:SymbolDB.ListViewColumnSorter.#ctor">
+            <summary>
+            Class constructor.  Initializes various elements
+            </summary>
+        </member>
+        <member name="M:SymbolDB.ListViewColumnSorter.Compare(System.Object,System.Object)">
+            <summary>
+            This method is inherited from the IComparer interface.  It compares the two objects passed using a case insensitive comparison.
+            </summary>
+            <param name="x">First object to be compared</param>
+            <param name="y">Second object to be compared</param>
+            <returns>The result of the comparison. "0" if equal, negative if 'x' is less than 'y' and positive if 'x' is greater than 'y'</returns>
+        </member>
+        <member name="P:SymbolDB.ListViewColumnSorter.SortColumn">
+            <summary>
+            Gets or sets the number of the column to which to apply the sorting operation (Defaults to '0').
+            </summary>
+        </member>
+        <member name="P:SymbolDB.ListViewColumnSorter.Order">
+            <summary>
+            Gets or sets the order of sorting to apply (for example, 'Ascending' or 'Descending').
+            </summary>
+        </member>
+        <member name="M:SymbolDB.Main.initDgvFinfo">
+            <summary>
+            /
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SymbolDB.Main.setTitle(SymbolDB.FileInfoItem,System.String)">
+            ----------------------------------    END OF SLIDESHOW NEXT SLIDE (auto and manual modes) -----------------------------
+            
+        </member>
+        <member name="M:SymbolDB.Main.assignInit1ParmsFromGlobals">
+            insertRowLvParms(string pname, string pvalue)
+        </member>
+        <member name="M:SymbolDB.Main.rbResize_CheckedChanged(System.Object,System.EventArgs)">
+            <summary>
+            GROUP BOX for RADIO BUTTONS for image preview resizing
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="F:SymbolDB.Main.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.Main.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.Main.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.MonitorDisplay.so">
+            gv.screen[2]x = gv.screen[0].Bounds.Width;
+        </member>
+        <member name="F:SymbolDB.PromptDirectory.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.PromptDirectory.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.PromptDirectory.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.PromptRTF.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.PromptRTF.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.PromptRTF.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:SymbolDB.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:SymbolDB.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:SymbolDB.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:SymbolDB.Properties.Resources.favicon">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+            </summary>
+        </member>
+        <member name="P:SymbolDB.Properties.Resources.GoSign">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:SymbolDB.Properties.Resources.GoSign1">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:SymbolDB.Properties.Resources.GoSign2">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:SymbolDB.Properties.Resources.home">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:SymbolDB.Properties.Resources.next">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:SymbolDB.Properties.Resources.prev">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:SymbolDB.Properties.Resources.printButton">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:SymbolDB.Properties.Resources.refresh">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.SourceCodeDisplay.parseImage(System.String,System.Boolean)">
+             <a href="http://nudes2.hegre-art.com/20061107-alena/1000/013.jpg">
+             <img src="http://nudes2.hegre-art.com/20061107-alena/150_150/013.jpg" width="150" height="150" border="0" /></a>
+            token1
+        </member>
+        <member name="F:SymbolDB.SourceCodeDisplay.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.SourceCodeDisplay.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.SourceCodeDisplay.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.GlobalVars.charFileName">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:SymbolDB.GlobalVars.errorImage">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SymbolDB.Program.Main">
+            <summary>
+            The main entry point for the application.
+            </summary>
+        </member>
+        <member name="T:SymbolDB.Resource1">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:SymbolDB.Resource1.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:SymbolDB.Resource1.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.TagPB.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.TagPB.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.TagPB.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.TopMost.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.TopMost.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.TopMost.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.TransparentForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.TransparentForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.TransparentForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.TraverserBG.bShowProgress">
+            
+        </member>
+        <member name="F:SymbolDB.TraverserBG.row">
+            /////////////////////////////////////// WORKER //////////////////////// RunWorkerAsync 
+        </member>
+        <member name="M:SymbolDB.TraverserBG.backgroundWorker1_RunWorkerCompleted(System.Object,System.ComponentModel.RunWorkerCompletedEventArgs)">
+            /////////////////////////////////////// COMPLETED ////////////////////////
+        </member>
+        <member name="M:SymbolDB.TraverserBG.backgroundWorker1_ProgressChanged(System.Object,System.ComponentModel.ProgressChangedEventArgs)">
+            ///////////////////////////////////////PROGRESS CHANGED ////////////////////////
+        </member>
+        <member name="M:SymbolDB.TraverserBG.getResultList">
+            ///////////////////////////////////////end ////////////////////////
+        </member>
+        <member name="F:SymbolDB.Traverser1.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.Traverser1.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.Traverser1.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="P:SymbolDB.URLitem.Stimestamp">
+            <summary>
+            ////////////////////////////////////////////////  properties 
+            </summary>
+        </member>
+        <member name="F:SymbolDB.URLHistory.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.URLHistory.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.URLHistory.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.VideoHelp.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.VideoHelp.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.VideoHelp.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.wait.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.wait.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.wait.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.WebBrowser.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.WebBrowser.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.WebBrowser.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.WMPcontroller.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.WMPcontroller.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.WMPcontroller.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.WmPlayer.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.WmPlayer.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.WmPlayer.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SymbolDB.XML_Editor.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.XML_Editor.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SymbolDB.XML_Editor.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+    </members>
+</doc>

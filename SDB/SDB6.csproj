@@ -1,0 +1,726 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0C758D57-C5C9-4189-86F1-610364A32BA1}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SymbolDB</RootNamespace>
+    <AssemblyName>SDB6</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <LangVersion>10.0</LangVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>C:\Users\david\OneDrive\Documents\publications\sdb6\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <WebPage>publish.htm</WebPage>
+    <ApplicationRevision>14</ApplicationRevision>
+    <ApplicationVersion>1.1.1.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+    <CodeAnalysisRuleSet>SDB4.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>GiveHelpDoc.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+    <CodeAnalysisRuleSet>SDB4.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>5F5828D370C671706D828CEAE6034A12BC91FEC7</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>SDB3_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>GiveHelpDoc.xml</DocumentationFile>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>SDB4.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>GiveHelpDoc.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>SDB4.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>SymbolDB.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>SDB.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft.NET\Primary Interop Assemblies\Microsoft.mshtml.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AsyncFileCopier.cs" />
+    <Compile Include="CopyInfo.cs" />
+    <Compile Include="Description.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Description.Designer.cs">
+      <DependentUpon>Description.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DIalogDeleteDup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DIalogDeleteDup.Designer.cs">
+      <DependentUpon>DIalogDeleteDup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DialogFolderAssignments.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogFolderAssignments.Designer.cs">
+      <DependentUpon>DialogFolderAssignments.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DialogFolderSelection.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogFolderSelection.Designer.cs">
+      <DependentUpon>DialogFolderSelection.cs</DependentUpon>
+    </Compile>
+    <Compile Include="dialogHelp.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dialogHelp.Designer.cs">
+      <DependentUpon>dialogHelp.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DialogTraverser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogTraverser.Designer.cs">
+      <DependentUpon>DialogTraverser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DialogParms.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogParms.Designer.cs">
+      <DependentUpon>DialogParms.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DisplayListView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DisplayListView.Designer.cs">
+      <DependentUpon>DisplayListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="D1mode.cs" />
+    <Compile Include="DialogGetInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogGetInfo.Designer.cs">
+      <DependentUpon>DialogGetInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DisplayMessage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DisplayMessage.Designer.cs">
+      <DependentUpon>DisplayMessage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DisplayMode.cs" />
+    <Compile Include="DisplayPreviewSet.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DisplayPreviewSet.Designer.cs">
+      <DependentUpon>DisplayPreviewSet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EditNotes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditNotes.Designer.cs" />
+    <Compile Include="Enum.cs" />
+    <Compile Include="ERROR.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ERROR.Designer.cs">
+      <DependentUpon>ERROR.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ErrorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ErrorDialog.Designer.cs">
+      <DependentUpon>ErrorDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ErrorStop.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ErrorStop.Designer.cs">
+      <DependentUpon>ErrorStop.cs</DependentUpon>
+    </Compile>
+    <Compile Include="File Functions Dialogs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="File Functions Dialogs.designer.cs">
+      <DependentUpon>File Functions Dialogs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FileCopyWithProgress.cs" />
+    <Compile Include="FileFunctions.cs" />
+    <Compile Include="FileFunctions2.cs" />
+    <Compile Include="FileInfoItem.cs" />
+    <Compile Include="Display1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Display1.Designer.cs">
+      <DependentUpon>Display1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DebugWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DebugWindow.Designer.cs">
+      <DependentUpon>DebugWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FileList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FileList.Designer.cs">
+      <DependentUpon>FileList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FileWatcher.cs" />
+    <Compile Include="FolderAssignment.cs" />
+    <Compile Include="GetDotNetVersion.cs" />
+    <Compile Include="Help.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Help.Designer.cs">
+      <DependentUpon>Help.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HideWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HideWindow.Designer.cs">
+      <DependentUpon>HideWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ImageInfo2.cs" />
+    <Compile Include="InitParmItemList.cs" />
+    <Compile Include="InitParms1.cs" />
+    <Compile Include="InitParmsStruct.cs" />
+    <Compile Include="KeyControl.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KeyControl.Designer.cs">
+      <DependentUpon>KeyControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MessageWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MessageWindow.Designer.cs">
+      <DependentUpon>MessageWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Movies2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Movies2.Designer.cs">
+      <DependentUpon>Movies2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Movies.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Movies.Designer.cs">
+      <DependentUpon>Movies.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MRListImages.cs" />
+    <Compile Include="PromptContinueWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PromptContinueWindow.Designer.cs">
+      <DependentUpon>PromptContinueWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PromptData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PromptData.Designer.cs">
+      <DependentUpon>PromptData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ShowDisplays.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShowDisplays.Designer.cs">
+      <DependentUpon>ShowDisplays.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ImageInfo.cs" />
+    <Compile Include="ImagePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ImagePanel.Designer.cs">
+      <DependentUpon>ImagePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ImgDisplayParms.cs" />
+    <Compile Include="ListViewColumnSorter.cs" />
+    <Compile Include="Main.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main.Designer.cs">
+      <DependentUpon>Main.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Model1.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Model1.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MonitorDisplay.cs" />
+    <Compile Include="PanelSize.cs" />
+    <Compile Include="PromptDirectory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PromptDirectory.Designer.cs">
+      <DependentUpon>PromptDirectory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PromptRTF.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PromptRTF.Designer.cs">
+      <DependentUpon>PromptRTF.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RootSetter.cs" />
+    <Compile Include="ScreensInfowas.cs" />
+    <Compile Include="SDB01DataSet.cs">
+      <DependentUpon>SDB01DataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.cs" />
+    <Compile Include="Settings1.cs" />
+    <Compile Include="SoundItems.cs" />
+    <Compile Include="SourceCodeDisplay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SourceCodeDisplay.designer.cs">
+      <DependentUpon>SourceCodeDisplay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ImageFileList.cs" />
+    <Compile Include="Globals.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resource1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource1.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Tag.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tag.Designer.cs">
+      <DependentUpon>Tag.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TarotCardReading.cs" />
+    <Compile Include="TarotCardInfo.cs" />
+    <Compile Include="TarotInfo2.cs" />
+    <Compile Include="TblCardinfo.cs" />
+    <Compile Include="TopMost.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TopMost.Designer.cs">
+      <DependentUpon>TopMost.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TransparentForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TransparentForm.designer.cs">
+      <DependentUpon>TransparentForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TraverseBG.cs" />
+    <Compile Include="Traverser1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Traverser1.Designer.cs">
+      <DependentUpon>Traverser1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="URL.cs" />
+    <Compile Include="URLHistory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="URLHistory.Designer.cs">
+      <DependentUpon>URLHistory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="URLinfoList.cs" />
+    <Compile Include="VideoHelp.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VideoHelp.Designer.cs">
+      <DependentUpon>VideoHelp.cs</DependentUpon>
+    </Compile>
+    <Compile Include="wait.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="wait.Designer.cs">
+      <DependentUpon>wait.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WebBrowser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WebBrowser.Designer.cs">
+      <DependentUpon>WebBrowser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WindowsThumbNailProvider.cs" />
+    <Compile Include="WMPcontroller.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="WMPcontroller.Designer.cs">
+      <DependentUpon>WMPcontroller.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WmPlayer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WmPlayer.Designer.cs">
+      <DependentUpon>WmPlayer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="XML_Editor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="XML_Editor.Designer.cs">
+      <DependentUpon>XML_Editor.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="DIalogDeleteDup.resx">
+      <DependentUpon>DIalogDeleteDup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DialogFolderAssignments.resx">
+      <DependentUpon>DialogFolderAssignments.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DialogFolderSelection.resx">
+      <DependentUpon>DialogFolderSelection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dialogHelp.resx">
+      <DependentUpon>dialogHelp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DialogTraverser.resx">
+      <DependentUpon>DialogTraverser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DialogParms.resx">
+      <DependentUpon>DialogParms.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DisplayListView.resx">
+      <DependentUpon>DisplayListView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DialogGetInfo.resx">
+      <DependentUpon>DialogGetInfo.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Display1.resx">
+      <DependentUpon>Display1.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DebugWindow.resx">
+      <DependentUpon>DebugWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DisplayMessage.resx">
+      <DependentUpon>DisplayMessage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DisplayPreviewSet.resx">
+      <DependentUpon>DisplayPreviewSet.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditNotes.resx" />
+    <EmbeddedResource Include="ERROR.resx">
+      <DependentUpon>ERROR.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ErrorDialog.resx">
+      <DependentUpon>ErrorDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ErrorStop.resx">
+      <DependentUpon>ErrorStop.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="File Functions Dialogs.resx">
+      <DependentUpon>File Functions Dialogs.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FileList.resx">
+      <DependentUpon>FileList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Help.resx">
+      <DependentUpon>Help.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HideWindow.resx">
+      <DependentUpon>HideWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="KeyControl.resx">
+      <DependentUpon>KeyControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MessageWindow.resx">
+      <DependentUpon>MessageWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Movies2.resx">
+      <DependentUpon>Movies2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Movies.resx">
+      <DependentUpon>Movies.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PromptContinueWindow.resx">
+      <DependentUpon>PromptContinueWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PromptData.resx">
+      <DependentUpon>PromptData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShowDisplays.resx">
+      <DependentUpon>ShowDisplays.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ImagePanel.resx">
+      <DependentUpon>ImagePanel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Main.resx">
+      <DependentUpon>Main.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PromptDirectory.resx">
+      <DependentUpon>PromptDirectory.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PromptRTF.resx">
+      <DependentUpon>PromptRTF.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SourceCodeDisplay.resx">
+      <DependentUpon>SourceCodeDisplay.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="Resource1.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tag.resx">
+      <DependentUpon>Tag.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TopMost.resx">
+      <DependentUpon>TopMost.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TransparentForm.resx">
+      <DependentUpon>TransparentForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Traverser1.resx">
+      <DependentUpon>Traverser1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="URLHistory.resx">
+      <DependentUpon>URLHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VideoHelp.resx">
+      <DependentUpon>VideoHelp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wait.resx">
+      <DependentUpon>wait.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WebBrowser.resx">
+      <DependentUpon>WebBrowser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WMPcontroller.resx">
+      <DependentUpon>WMPcontroller.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WmPlayer.resx">
+      <DependentUpon>WmPlayer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XML_Editor.resx">
+      <DependentUpon>XML_Editor.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
+    <None Include="..\app.config">
+      <SubType>Designer</SubType>
+      <Link>app.config</Link>
+    </None>
+    <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
+    <None Include="ClassDiagram3.cd" />
+    <None Include="Model1.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Model1.Context.cs</LastGenOutput>
+    </None>
+    <None Include="Model1.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Model1.cs</LastGenOutput>
+    </None>
+    <None Include="Properties\app.manifest" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <None Include="SDB01DataSet.xsc">
+      <DependentUpon>SDB01DataSet.xsd</DependentUpon>
+    </None>
+    <None Include="SDB01DataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="SDB01DataSet.xss">
+      <DependentUpon>SDB01DataSet.xsd</DependentUpon>
+    </None>
+    <None Include="SDB3_TemporaryKey.pfx" />
+    <None Include="SDB4.ruleset" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.8">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.8 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.NetCore.DesktopRuntime.8.0.x64">
+      <Visible>False</Visible>
+      <ProductName>.NET Desktop Runtime 8.0.17 %28x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.4.5">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 4.5</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\favicon.ico" />
+    <None Include="Resources\GoSign.png" />
+    <None Include="Resources\home.png" />
+    <None Include="Resources\next.png" />
+    <None Include="Resources\prev.png" />
+    <None Include="Resources\printButton.png" />
+    <None Include="Resources\refresh.png" />
+    <Content Include="SDB.ico" />
+    <Content Include="SDB01.sdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SDB3LoacalDB1.sdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <COMReference Include="AxWMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>aximp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="WMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

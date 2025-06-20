@@ -1,0 +1,1 @@
+﻿// No EntityContainer exists in the model, so no code was generated
