@@ -171,6 +171,18 @@ namespace SymbolDB
             tbHistory6.Text = gv.initParm1List[0].mostRecent6;
         }
 
+        public void SaveImageFileListDefault()
+        {
+            string localAppData =
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string myAppFolder = Path.Combine(localAppData, "SymbolDB");    // or your app’s name
+            Directory.CreateDirectory(myAppFolder);
+
+            string listFile = Path.Combine(myAppFolder, "ImageFileList.xml");
+
+        }
+
+
         // CAPTURE FOCUS ON THIS WINDOW
         int timerCount = 0;
         public void call_from_timer_main()
@@ -1282,7 +1294,6 @@ namespace SymbolDB
         {
             if (cbCopyFileListMain.Checked)
             {
-                // CopyFileListTo();     List<Int32> copy = original.ToList();
             }
             if (!bThisIsSubWindow)
             {
@@ -1910,9 +1921,9 @@ namespace SymbolDB
             try
             {
                 if (bThisIsSubWindow)
-                    serializer.Serialize(textWriter, imageFileList2.finfoList);  // this returns    List<FileInfoItem> 
+                    serializer.Serialize(textWriter, imageFileList2.finfoList);  // this saves List<FileInfoItem> 
                 else
-                    serializer.Serialize(textWriter, imageFileList1.finfoList);  // this returns    List<FileInfoItem> 
+                    serializer.Serialize(textWriter, imageFileList1.finfoList);  // this saves List<FileInfoItem> 
             }
             catch (Exception ex)
             {
@@ -3583,18 +3594,7 @@ namespace SymbolDB
         }
 
         List<FileInfoItem> orderedByName;
-        public void sortNm()
-        {
-            dgv1.DataSource = null;
-            orderedByName = imageFileList2.finfoList.OrderBy(file => file.fname).ToList();
-            dgv1.DataSource = orderedByName;
-            //resizeFileListDataGrid();
-            if (bThisIsSubWindow)
-                imageFileList2.copyFileList(orderedByName); //ifl 2022 replaced
-            else
-                imageFileList1.copyFileList(orderedByName); //ifl 2022 replaced
-            formatDataGridViewFileList();
-        }
+       
 
         List<FileInfoItem> orderedByFolder;
         private void btSortFolder_Click(object sender, EventArgs e)
@@ -6028,8 +6028,7 @@ namespace SymbolDB
 
         private void btUseImageList_Click(object sender, EventArgs e)
         {
-
-            //ImageFileList
+             //ImageFileList
             //class ImageFileList
             if (gv.imageFileList1 == null)
             {
@@ -6610,6 +6609,25 @@ namespace SymbolDB
             pbThumbNail.BringToFront();
             pb2.Size = pbThumbNail.Size;
             pb2.SizeMode = PictureBoxSizeMode.Zoom;
+        }
+        
+        public int copyFileList2Main2(List<FileInfoItem> list)
+        {
+            gv.imageFileListCompare.finfoList.Clear();
+            for (int idx = 0; idx < list.Count(); ++idx)
+            {
+                gv.imageFileListCompare.finfoList.Add(list[idx]);
+            }
+            return gv.imageFileListCompare.finfoList.Count;
+        }
+        private void cbCopyFileListMain_CheckedChanged(object sender, EventArgs e)
+        {
+            if (bThisIsSubWindow && cbCopyFileListMain.Checked)
+            {
+                gv.imageFileListCompare = new ImageFileList();
+                copyFileList2Main2(gv.imageFileList2.finfoList);
+            }
+
         }
     }
 

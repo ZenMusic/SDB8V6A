@@ -204,6 +204,11 @@
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             </summary>
         </member>
+        <member name="M:SymbolDB.DisplayPreviewSet.LoadVisibleImagesAsync(System.Int32)">
+            <summary>
+            Asynchronously load each PictureBox image with a max degree of parallelism.
+            </summary>
+        </member>
         <member name="F:SymbolDB.DisplayPreviewSet.components">
             <summary>
             Required designer variable.
@@ -524,6 +529,54 @@
             <summary>
             Required method for Designer support - do not modify
             the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.ImageCache.GetImage(System.Int32)">
+            <summary>
+            Returns the image at the given global index, loading its batch if necessary.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.ImageCache.PreloadBatchAsync(System.Int32)">
+            <summary>
+            Kicks off an async preload of the batch beginning at batchStart.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.ImageCompare.CompareImages(System.Drawing.Bitmap,System.Drawing.Bitmap,System.Int32,System.Int32)">
+            <summary>
+            Compare two images by resizing both to <paramref name="thumbSize"/>²,
+            then walking their 32-bpp ARGB buffers. Returns the percent of pixels
+            whose average RGB difference exceeds <paramref name="tolerance"/>.
+            </summary>
+        </member>
+        <member name="T:SymbolDB.ImageMatcher">
+            <summary>
+            Finds all images under a directory whose pixel‐difference score against
+            a “main” image is ≥ threshold, skipping files of a different file‐size.
+            Reports progress and supports cancellation.
+            </summary>
+        </member>
+        <member name="P:SymbolDB.ImageMatcher.ProgressCallback">
+            <summary>
+            Called every time another batch of 1 000 files have been scanned.
+            (totalFilesSeen, totalMatchesFound)
+            </summary>
+        </member>
+        <member name="M:SymbolDB.ImageMatcher.FindMatches(System.Drawing.Bitmap,System.String,System.String,System.Double,System.Threading.CancellationToken)">
+            <summary>
+            Scan every image under <paramref name="rootDirectory"/>,
+            compare to <paramref name="mainImage"/>, and return all
+            file paths whose match fraction ≥ <paramref name="threshold"/>.
+            </summary>
+        </member>
+        <member name="M:SymbolDB.ImageMatcher.DeleteMatches(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Deletes every file in the list (ignores failures).
+            </summary>
+        </member>
+        <member name="M:SymbolDB.ImageMatcher.CompareLocked(System.Drawing.Imaging.BitmapData,System.Drawing.Bitmap)">
+            <summary>
+            Core pixel‐difference routine: locks the test bitmap internally,
+            walks both 32bpp ARGB buffers, and returns a 0…1 match fraction.
             </summary>
         </member>
         <member name="F:SymbolDB.KeyControl.components">

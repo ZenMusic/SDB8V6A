@@ -1,12 +1,19 @@
-﻿using System;
+﻿using SymbolDB;
+using System;
 using System.Collections.Generic;
+using System.DirectoryServices.ActiveDirectory;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using static System.Net.Mime.MediaTypeNames;
@@ -105,7 +112,7 @@ namespace SymbolDB
         Boolean showImage = false;
         FileInfoItem finfo1 = new FileInfoItem();
         FileInfoItem iinfo2 = new FileInfoItem();
-        FileInfoItem iinfo3 = new FileInfoItem();
+        FileInfoItem iinfoNextImage = new FileInfoItem();
 
         Label label = new Label();
         Display1[] display = new Display1[3]; // display array loadi
@@ -114,7 +121,7 @@ namespace SymbolDB
         Display1 display3;
         Display1 display4;
         Boolean slideSorter = false;
-        DisplayPreviewSet ds = null;
+        DisplayPreviewSet displayPreviewSetForm = null;
         Boolean bScreen1 = false;
         Boolean bScreen2 = false;
         Boolean bScreen3 = false;
@@ -145,10 +152,11 @@ namespace SymbolDB
             var value = m.Text;
             this.Close();
         }
+
         public Main() //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
         {
             InitializeComponent();
-
+            dgvFinfo.Size = new System.Drawing.Size(581, 332);
             PreSetupDGV(); //2025
             btCopyImageInfo.Visible = false;
             lblResizeDims.Text = sVersion;
@@ -158,6 +166,11 @@ namespace SymbolDB
             mainInit();
             this.Text = sVersion;
             CreateMostRecentImageList();
+            cbPanel1.Checked = true;
+            cbPanel1.Checked = false;
+            cbPanel2.Checked = true;
+            cbPanel2.Checked = false;
+
         }
         public bool bDebugStartup = false;
         public bool bUseLocalApplicationData = false;
@@ -371,7 +384,7 @@ namespace SymbolDB
             pbLastImage.SizeMode = PictureBoxSizeMode.Zoom;
             pbNext.SizeMode = PictureBoxSizeMode.Zoom;
             pb1ThumbNail.SizeMode = PictureBoxSizeMode.Zoom;
-
+            pbMatch.SizeMode = PictureBoxSizeMode.Zoom;
             pb2Image.SizeMode = PictureBoxSizeMode.Zoom;
             // loadInitParmsFileXML();
             getSoundList();
@@ -542,7 +555,7 @@ namespace SymbolDB
             byte[] xByte = (byte[])_imageConverter.ConvertTo(x, typeof(byte[]));
             return xByte;
         }
-        public bool CompareImages()
+        public bool CompareImagesOld()
         {
             var array1 = converterDemo(bmp);
             var array2 = converterDemo(bmpPrevious);
@@ -850,7 +863,7 @@ namespace SymbolDB
                 gv.nextIdx = gv.slideCount1 - 1;
 
             tbSlideNumber.Text = string.Format("{0:###,###,##0}", gv.nextIdx);
-            tbRowCount.Text = tbSlideNumber.Text;
+            tbImageNumber.Text = tbSlideNumber.Text;
             tbMaxSlideNumber.Text = string.Format("{0:###,###,###}", gv.slideCount1 - 1);
 
             // 8) Additional fields
@@ -992,7 +1005,7 @@ namespace SymbolDB
             // Sort the items in the list in ascending order.
             lvScreenInfo.Sorting = System.Windows.Forms.SortOrder.None;
 
-            Rectangle wndBounds = this.Bounds;
+            System.Drawing.Rectangle wndBounds = this.Bounds;
 
             listViewLoc = lvScreenInfo.Location;
             /* wndBounds.Height -= 250;
@@ -1065,7 +1078,7 @@ namespace SymbolDB
             // Sort the items in the list in ascending order.
             lvScreenInfo.Sorting = System.Windows.Forms.SortOrder.None;
 
-            Rectangle wndBounds = this.Bounds;
+            System.Drawing.Rectangle wndBounds = this.Bounds;
 
             listViewLoc = lvScreenInfo.Location;
             /* wndBounds.Height -= 250;
@@ -1180,7 +1193,7 @@ namespace SymbolDB
                 g.DrawImage(originalImage, 0, 0, width, height);
 
                 // Fill a part of the result image with a specific color.
-                Rectangle toFill = new Rectangle(0, 0, width / 2, height / 2);
+                System.Drawing.Rectangle toFill = new System.Drawing.Rectangle(0, 0, width / 2, height / 2);
                 g.FillRectangle(brush, toFill);
             }
 
@@ -1250,16 +1263,24 @@ namespace SymbolDB
         }
         public void directoryPath(string path)
         {
-            if (cb.Checked)
+            if (cbAutoAdvance.Checked)
                 this.Text = "copy mode -- " + path;
             else
                 this.Text = path;
         }
 
-        public void ClearAllPictureBoxesxxxxx()
+        public void ClearAllPictureBoxesInUse()
         {
+            pbMatch.Image?.Dispose();
+            pbNext.Image?.Dispose();
+           // pb1.Image = null;
+            pb1ThumbNail.Image?.Dispose();
+            pbLastImage.Image?.Dispose();
+            pbSecondLast.Image?.Dispose();
+            pbThirdLast.Image?.Dispose();
+            pbFourthLast.Image?.Dispose();
+            pbMatch.Image = null;
             pbNext.Image = null;
-            pb1.Image = null;
             pb1ThumbNail.Image = null;
             pbLastImage.Image = null;
             pbSecondLast.Image = null;
@@ -1299,7 +1320,7 @@ namespace SymbolDB
             ResetPictureBoxes();
             // gv.slideCount = 0;
             gv.nextIdx = 0;
-            this.Refresh();
+            //this.Refresh();
             if (gv.dialogTraverser == null || gv.dialogTraverser.IsDisposed)
             {
                 gv.dialogTraverser = new TraverserDialog(gv, this, 0, ff);
@@ -1440,7 +1461,7 @@ namespace SymbolDB
 
         }
         string lastImage;
-
+        Bitmap mainImage = null;
         Bitmap bmp;
         Bitmap bmpPrevious;
         bool bFindDupByFileSize = false;
@@ -1453,7 +1474,8 @@ namespace SymbolDB
                 case 1: //current pb1
                     if (cbDisplayOnThisDisplay.Checked)
                     {
-                        pb1.Image = BitmapFromSource(LoadImage(fpath));
+                        mainImage = BitmapFromSource(LoadImage(fpath));
+                        pb1.Image = mainImage;
                         //  bmp = new Bitmap(fpath);
                         //  bmpPrevious = bmp;
                         //   pb1.Image = bmp;
@@ -1480,7 +1502,11 @@ namespace SymbolDB
                         bool bcontinue = DisplayContinueOrAbort(gv.nextIdx);
                         return false;
                     }
-                    int t2 = gv.nextIdx;
+                    if (idxOfNextImage != fi.index)
+                    {
+                        System.Windows.Forms.MessageBox.Show($"idx {idxOfNextImage} != {fi.index}", "preview image error");
+                    }
+                    int t2 = fi.index;
                     pbNext.Image = bmp;
                     tbPbNextSize.Text = $"{fi.len}";
                     nextFileSize = fi.len;                //2024
@@ -1582,6 +1608,11 @@ namespace SymbolDB
             //  label.Text = String.Empty;
 
             //   this.Controls.Add(label);
+        }
+        public void MasterStopSlideShow()
+        {
+            bMasterStopSlideShow = true;
+            timer.Stop();
         }
         public void initTimer(decimal isec)
         {
@@ -1690,7 +1721,7 @@ namespace SymbolDB
                 btCopyImageInfo.Text = $"File Copy to >>{targetDir} \n\n {fpathCurrentImage}";
                 tbMessage.Text = $"File Copy to >>{targetDir} \n\n {fpathCurrentImage}";
                 //2024
-                fileExt = Path.GetExtension(fpathCurrentImage);
+                fileExt = System.IO.Path.GetExtension(fpathCurrentImage);
                 //fileExt fpathCurrentImage
                 this.Refresh();
                 if (!Directory.Exists(@tbTargetFolder.Text))
@@ -1707,7 +1738,7 @@ namespace SymbolDB
                     {
                         if (rbMove.Checked)
                         {
-                            string combined = Path.Combine(targetDir, Path.GetFileName(fpathCurrentImage));
+                            string combined = System.IO.Path.Combine(targetDir, System.IO.Path.GetFileName(fpathCurrentImage));
                             if (ff.verifyFileExists(combined))
                             {
                                 System.Windows.Forms.MessageBox.Show($"{combined}", "File Already Exists");
@@ -1824,6 +1855,7 @@ namespace SymbolDB
         }
         public void SetImageList3(ImageFileList list)
         {
+            gv.imageFileListCompare = new ImageFileList();
             if (gv.imageFileListCompare != null)
                 gv.imageFileListCompare.clearList();
             gv.imageFileListCompare = list;
@@ -1904,7 +1936,7 @@ namespace SymbolDB
             for (int idx = 0; idx < soundFiles.Length; ++idx)
             {
 
-                sitems = new SoundItems(idx, Path.GetFileName(soundFiles[idx]), soundFiles[idx]);
+                sitems = new SoundItems(idx, System.IO.Path.GetFileName(soundFiles[idx]), soundFiles[idx]);
                 soundList.Add(sitems);
             }
         }
@@ -2050,10 +2082,12 @@ namespace SymbolDB
             {
                 timer.Enabled = bFlag;
                 timer.Start();
+                btSlideShow.BackColor = Color.LightGreen;
             }
             else
                 timer.Stop();
             timer.Enabled = bFlag;
+            btSlideShow.BackColor = Color.LightGray;
             return bFlag;
 
         }
@@ -2194,6 +2228,7 @@ namespace SymbolDB
             if (bMasterStopSlideShow)
             {
                 timer2.Stop();
+                timer.Stop();
                 return;
             }
             if (bTimer2Running)
@@ -2357,6 +2392,23 @@ namespace SymbolDB
             idx2 = 0;
             return idx2;
         }
+        const int MaxX = 2440;
+        const int MaxY = 1040;
+        public void reposition()
+        {
+            foreach (Control c in this.Controls)
+            {
+                // get current position
+                var loc = c.Location;
+
+                // clamp it
+                if (loc.X > MaxX) loc.X = MaxX;
+                if (loc.Y > MaxY) loc.Y = MaxY;
+
+                // re-assign
+                c.Location = loc;
+            }
+        }
         ///////////////////////// NEXT IMAGE  is THIS IMAGE CURRENT IDX gv.nextSlide  ///////////////////////// -1 use gv.nextSlide++
         public int showNextSlideImageFileList1(int idx, int iDirection, bool bLoadFirstImage = false)
         {
@@ -2395,6 +2447,7 @@ namespace SymbolDB
             idxRC = showNextImageFromList(gv.nextIdx, iDirection);
             //
             //updateLvFinfo(finfo1, idxRC); //show next
+            tbFpath.Text = finfo1.fpath;
             updateDgvFinfo(finfo1, idxRC);
             //
             if (bLoadFirstImage)
@@ -2466,13 +2519,13 @@ namespace SymbolDB
                 {
                     double match = CompareImages2((Bitmap)pb1.Image, (Bitmap)pbNext.Image); //pb1 pbNext
                     tbMatchPercent.Text = match.ToString();
-                    if (match > 80)
+                    if (match > 90)
                     {
                         stopSlideShow();
                         DialogResult result = System.Windows.Forms.MessageBox.Show("Mark next for Deletion?", "This image and next image match", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                         if (result == DialogResult.Yes)
                         {
-                            MarkDeleteAndContinue();
+                            MarkNextForDeletion();
                         }
                         else if (result == DialogResult.No)
                         {
@@ -2482,6 +2535,7 @@ namespace SymbolDB
                         {
                             cbFindDuplicates.Checked = false;
                             stopSlideShow();
+                            MasterOff();
                         }
                     }
                 }
@@ -2683,16 +2737,17 @@ namespace SymbolDB
         //dmc9
         bool bUseBitmapLoad = false;
 
+        public int idxOfNextImage;
         public void previewNextImage(int iDirection)
         {
             string fpath2;
-            int idx;
+            
             bool bOk = false;
             //compute IDX
             if (iDirection > 0)
             {
                 if (gv.nextIdx < gv.slideCount1 - 1) //dmc check this
-                    idx = gv.nextIdx + 1; //next
+                    idxOfNextImage = gv.nextIdx + 1; //next
                 else
                     return;
             }
@@ -2700,15 +2755,21 @@ namespace SymbolDB
             {
                 if (gv.nextIdx <= 0)
                     return;
-                idx = gv.nextIdx - 1; //previous
+                idxOfNextImage = gv.nextIdx - 1; //previous
             }
-            idx = getImageInfoByIndex(idx, 1, true); //true = preview  result in finfo1
-            if (idx < 0)
+            idxOfNextImage = getImageInfoByIndex(idxOfNextImage, 1, true); //true = preview  result in finfo1
+            if (idxOfNextImage < 0)
                 return;
-            iinfo3 = gv.imageFileList1.getIndexed(idx);
-            fpath2 = iinfo3.fpath;
-            loadedPreviewListNumber = idx;
-            tagNextImageName.Text = iinfo3.fname;
+            //
+            //
+            iinfoNextImage = gv.imageFileList1.getIndexed(idxOfNextImage);
+            iinfoNextImage.index = idxOfNextImage;
+            //
+            //
+            tbPreviewIndex.Text = idxOfNextImage.ToString();
+            fpath2 = iinfoNextImage.fpath;
+            loadedPreviewListNumber = idxOfNextImage;
+            tagNextImageName.Text = iinfoNextImage.fname;
             bool ok = false;
             if (false && !cbDisplayPreview.Checked)
             {
@@ -2717,7 +2778,7 @@ namespace SymbolDB
             }
 
             tagNextImageName.BackColor = tagBackgroundColor;
-            if (iinfo3.bInvalid) //INVALID FILE FORMAT FOR IMAGE 
+            if (iinfoNextImage.bInvalid) //INVALID FILE FORMAT FOR IMAGE 
             {
                 gv.debug.w("__PREVIEW FOUND >>> INVALID IMAGE FILE HEADER in previewNextImage:", fpath2);
                 stopSlideShow();
@@ -2731,7 +2792,7 @@ namespace SymbolDB
 
             try
             {
-                LoadImage(fpath2, 0, iinfo3); /////exception thrown if invalid/corrupted IMAGE ///////////////////////
+                LoadImage(fpath2, 0, iinfoNextImage); /////exception thrown if invalid/corrupted IMAGE ///////////////////////
                 //   pb2.SizeMode = PictureBoxSizeMode.Zoom;
                 //   pb2.Update();
             }
@@ -2740,12 +2801,12 @@ namespace SymbolDB
                 tagNextImageName.BackColor = Color.Red;
                 gv.debug.w("---LOAD FAILED! >> INVALID FILE in PreviewNextImage pbNext.Load:", fpath2);
                 pbNext.Image = null;
-                gv.imageFileList1.markRating("@", idx);
+                gv.imageFileList1.markRating("@", idxOfNextImage);
                 //gv.imageFileList.markInvalid(true, idx);
                 loadedPreviewListNumber = -1;
             }
             if (!bUseBitmapLoad)
-                LoadImage(fpath2, 0, iinfo3);
+                LoadImage(fpath2, 0, iinfoNextImage);
             else
             {
                 if (pbSecondLast.Image != null)
@@ -2958,7 +3019,7 @@ namespace SymbolDB
 
                 //gv.imageFileList.getIndexed(nextSlide).fname;
 
-                gv.imageFileList1.updatePath(Path.Combine(targetDir, Path.GetFileName(fpathCurrentImage)), gv.nextIdx);
+                gv.imageFileList1.updatePath(System.IO.Path.Combine(targetDir, System.IO.Path.GetFileName(fpathCurrentImage)), gv.nextIdx);
 
                 gv.debug.w("ShowNextSlide2 in Main moveImage");
                 this.showNextSlideImageFileList1(gv.nextIdx, 1);
@@ -3036,7 +3097,7 @@ namespace SymbolDB
         public void SaveInitFile()
         {
             // 1) Build a path under LocalApplicationData:
-            string folder = Path.Combine(
+            string folder = System.IO.Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "MyCompanyName",     // or any folder name you prefer
                 "MyAppName"         // your application name
@@ -3046,7 +3107,7 @@ namespace SymbolDB
             Directory.CreateDirectory(folder);
 
             // 3) Construct the init file’s full path
-            string initFilePath = Path.Combine(folder, "sdb5.xml");
+            string initFilePath = System.IO.Path.Combine(folder, "sdb5.xml");
 
             // 4) Write your init file here 
             // (e.g., XML serialization, plain text, JSON, etc.)
@@ -3059,12 +3120,12 @@ namespace SymbolDB
         public void LoadInitFile()
         {
             // Recreate the path
-            string folder = Path.Combine(
+            string folder = System.IO.Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "MyCompanyName",
                 "MyAppName"
             );
-            string initFilePath = Path.Combine(folder, "sdb5.xml");
+            string initFilePath = System.IO.Path.Combine(folder, "sdb5.xml");
 
             if (!File.Exists(initFilePath))
             {
@@ -3129,7 +3190,7 @@ namespace SymbolDB
 
         private void setCopyOnly()
         {
-            if (cb.Checked)
+            if (cbAutoAdvance.Checked)
             {
                 gv.copyOnly = true;
                 gv.mainWindow.initFastTimer(600);
@@ -3671,10 +3732,10 @@ namespace SymbolDB
 
         public void displayPreviewSet()
         {
-            if (ds == null || ds.IsDisposed)
-                ds = new DisplayPreviewSet(gv, gv.nextIdx);
+            if (displayPreviewSetForm == null || displayPreviewSetForm.IsDisposed)
+                displayPreviewSetForm = new DisplayPreviewSet(gv, gv.nextIdx);
             else
-                ds.Activate();
+                displayPreviewSetForm.Activate();
             // ds.WindowState = FormWindowState.Normal;
             //  ds.Location = new Point(gv.screen[1].Bounds.Location.X, gv.screen[1].Bounds.Location.Y);
         }
@@ -3684,17 +3745,17 @@ namespace SymbolDB
         }
         public void ResizePreviewSet()
         {
-            if (ds == null || ds.IsDisposed)
+            if (displayPreviewSetForm == null || displayPreviewSetForm.IsDisposed)
                 return;
-            ds.ResizeDisplaySet(true);
+            displayPreviewSetForm.ResizeDisplaySet(true);
         }
         public void syncPreviewDisplay()
         {
-            if (ds != null)
+            if (displayPreviewSetForm != null)
             {
-                if (ds.Visible)
+                if (displayPreviewSetForm.Visible)
                 {
-                    ds.syncImageIdx();
+                    displayPreviewSetForm.syncImageIdx();
                 }
             }
         }
@@ -3748,7 +3809,7 @@ namespace SymbolDB
                         display2 = new Display1(gv);
                         display2.setDisplayMonitor(gv.screen[1], 2, display2.Name, win[1]);
                        
-                        win[idx].YourLocation(win[idx].Location);
+                       // win[1].YourLocation(win[1].Location);
                     }
                     display2.Show();
                 }
@@ -3916,7 +3977,7 @@ namespace SymbolDB
 
         private void cbCopyOnly_CheckedChanged_1(object sender, EventArgs e)
         {
-            bAutoAdvance = cb.Checked;
+            bAutoAdvance = cbAutoAdvance.Checked;
         }
 
         bool bTarotWidth = true;
@@ -3929,8 +3990,11 @@ namespace SymbolDB
         {
             sound(30);
             ResetPictureBoxes();
+            ClearAllPictureBoxesInUse();
             deleteMarkedImages();
             showFirstSlide();
+            countMarkedForDeletion = 0;
+            tbMarkedForDeletion.Text = countMarkedForDeletion.ToString();
         }
 
         private void listFinfo()
@@ -3946,11 +4010,14 @@ namespace SymbolDB
                     ii.bDelete = true;
             }
         }
-        public void markForDeletion(bool on = true)
+        public int countMarkedForDeletion = 0;
+        public void markForDeletion(bool delete = true)
         {
             btDeleteMarked.BackColor = Color.OrangeRed;
-            finfo1.bDelete = on;
+            finfo1.bDelete = true;
             updateLvFinfo(finfo1); //mark del
+            ++countMarkedForDeletion;
+            tbMarkedForDeletion.Text = countMarkedForDeletion.ToString();
         }
         public void InsertSourceComment(string src)
         {
@@ -3959,11 +4026,29 @@ namespace SymbolDB
         }
         private void btMarkForDeletion_Click(object sender, EventArgs e)
         {
+            MarkForDeletion();
+        }
+        public void MarkForDeletion()
+        { 
             markDeleted();
             if (cbAdvanceOnDelete.Checked)
                 showNextSlide3(gv.nextIdx, 1);
         }
-
+        public void MarkNextForDeletion()
+        {
+            markNextForDeletion2();
+            if (cbAdvanceOnDelete.Checked)
+                showNextSlide3(gv.nextIdx, 1);
+        }
+        public void markNextForDeletion2(bool delete = true)
+        {
+            btDeleteMarked.BackColor = Color.OrangeRed;
+            // gv.nextIdxxxxx
+            iinfoNextImage.bDelete = true;
+            updateLvFinfo(finfo1); //mark del
+            ++countMarkedForDeletion;
+            tbMarkedForDeletion.Text = countMarkedForDeletion.ToString();
+        }
         public bool markDeleted()
         {
             bool bSet = !finfo1.bDelete;
@@ -4107,7 +4192,7 @@ namespace SymbolDB
                 return;
             }
             //if gv.screen[1].ac
-            Rectangle recDisplay1 = gv.screen[1].Bounds;
+            System.Drawing.Rectangle recDisplay1 = gv.screen[1].Bounds;
             System.Drawing.Point p = new System.Drawing.Point(recDisplay1.X, recDisplay1.Y);
             int winnumber = 0;
             //int idx = winnumber - 1;
@@ -4141,7 +4226,7 @@ namespace SymbolDB
             if (!cbRename.Checked)
                 rbCopy.Checked = true;
             if (cbCatalogImages.Checked)
-                cb.Checked = true;
+                cbAutoAdvance.Checked = true;
             setCopyMode(cbCatalogImages.Enabled);
             /*
             if (display1 != null)
@@ -4367,7 +4452,7 @@ namespace SymbolDB
         {
             if (this.saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                string fpath = Path.ChangeExtension(saveFileDialog1.FileName, "xml");
+                string fpath = System.IO.Path.ChangeExtension(saveFileDialog1.FileName, "xml");
                 XmlSerializer serializer = new XmlSerializer(typeof(List<FileInfoItem>));
                 TextWriter textWriter = new StreamWriter(fpath);
                 try
@@ -4387,7 +4472,7 @@ namespace SymbolDB
         {
             if (this.saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                string fpath = Path.ChangeExtension(saveFileDialog1.FileName, "xml");
+                string fpath = System.IO.Path.ChangeExtension(saveFileDialog1.FileName, "xml");
                 XmlSerializer serializer = new XmlSerializer(typeof(List<FileInfoItem>));
                 TextWriter textWriter = new StreamWriter(fpath);
                 try
@@ -4589,7 +4674,10 @@ namespace SymbolDB
                 gv.debug.w("clipboard error tbFpath_TextChanged");
             }
         }
-
+        public void SetNextSlideNumber(int number)
+        {
+            tbGoToSlide.Text = number.ToString();
+        }
 
         private void tbSlideNumber_Enter(object sender, EventArgs e)
         {
@@ -4898,7 +4986,7 @@ namespace SymbolDB
             Control win = (Control)sender;
             System.Drawing.Size x = this.MaximumSize;
 
-            if (win.Width != 640 && win.Height != 480)
+           // if (win.Width != 640 && win.Height != 480)
                 lblResizeDims.Text = $"{win.Width} x {win.Height}";
         }
 
@@ -5097,12 +5185,12 @@ namespace SymbolDB
         {
             if (gv.imageFileList1 == null)
             {
-                tbRowCount.Text = "0";
+                tbImageNumber.Text = "0";
             }
             else
             {
                 gv.slideCount1 = gv.imageFileList1.getImageFileListLength();
-                tbRowCount.Text = gv.slideCount1.ToString();
+                tbImageNumber.Text = gv.slideCount1.ToString();
             }
         }
 
@@ -5154,9 +5242,9 @@ namespace SymbolDB
             }
 
         }
+        
         //
-        //
-        double CompareImages(Bitmap InputImage1, Bitmap InputImage2, int Tollerance = 10)
+        double CompareImagesOriginal(Bitmap InputImage1, Bitmap InputImage2, int Tollerance = 10)
         {
             if (InputImage1 == null || InputImage2 == null)
                 return -1;
@@ -5207,7 +5295,7 @@ namespace SymbolDB
         public double CompareImages2(Bitmap image, Bitmap image2, int range = 10)
         {
 
-            unmatchPercent = CompareImages((Bitmap)image, (Bitmap)image2, 10);
+            unmatchPercent = ImageCompare.CompareImages((Bitmap)image, (Bitmap)image2, 10);
             double match = 100 - (Math.Round(unmatchPercent, 2));
 
             tbWatch.Text = unmatchPercent.ToString();
@@ -5261,7 +5349,6 @@ namespace SymbolDB
         }
         public double CompareImagesOnList()
         {
-
             unmatchPercent = CompareImages2((Bitmap)pb1.Image, (Bitmap)pb2Image.Image, 10); // image pb2Image
             tbWatch.Text = unmatchPercent.ToString();
             if (unmatchPercent < 20) //a match STOP
@@ -5603,7 +5690,7 @@ namespace SymbolDB
 
             //copy to bitmap
             Bitmap bitmap = new Bitmap(src.PixelWidth, src.PixelHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            var data = bitmap.LockBits(new Rectangle(System.Drawing.Point.Empty, bitmap.Size), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            var data = bitmap.LockBits(new System.Drawing.Rectangle(System.Drawing.Point.Empty, bitmap.Size), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             src.CopyPixels(System.Windows.Int32Rect.Empty, data.Scan0, data.Height * data.Stride, data.Stride);
             bitmap.UnlockBits(data);
 
@@ -5623,6 +5710,20 @@ namespace SymbolDB
             stream.Close();
             stream.Dispose();
             return bitmap1;
+        }
+        System.Windows.Media.Imaging.BitmapImage bitmapSource;
+        public System.Windows.Media.Imaging.BitmapImage LoadImageSource(string imageFilePath)
+        {
+            bitmapSource = new BitmapImage();
+            var stream = File.OpenRead(imageFilePath);
+
+            bitmapSource.BeginInit();
+            bitmapSource.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapSource.StreamSource = stream;
+            bitmapSource.EndInit();
+            stream.Close();
+            stream.Dispose();
+            return bitmapSource;
         }
         string fileNameBase = "SDB";
         string fileExt = ".txt";
@@ -5664,14 +5765,6 @@ namespace SymbolDB
                 gv.fileListWin.WindowState = FormWindowState.Normal;
                 gv.fileListWin.Activate();
             }
-        }
-
-        private void btMoveToDeleteList_Click(object sender, EventArgs e)
-        {
-
-            // FileInfoItem fi = GetSelectedFileInfoItem();
-            gv.fileListWin.AddItem(finfo1);
-            gv.fileListWin.Activate();
         }
 
         private void b_Click(object sender, EventArgs e)
@@ -5724,10 +5817,10 @@ namespace SymbolDB
 
         private void btResize1080_Resize(object sender, EventArgs e)
         {
-            Rectangle currentScreen = GetScreen2();
+            System.Drawing.Rectangle currentScreen = GetScreen2();
             btSizeWindow.Text = $"{this.Bounds.Width} {this.Bounds.Height}";
         }
-        public Rectangle GetScreen2()
+        public System.Drawing.Rectangle GetScreen2()
         {
             return Screen.FromControl(this).Bounds;
         }
@@ -5762,7 +5855,9 @@ namespace SymbolDB
 
         private void cbSlideShowOff_CheckedChanged(object sender, EventArgs e)
         {
-            bMasterStopSlideShow = cbSlideShowOff.Checked; 
+            bMasterStopSlideShow = !cbSlideShowOff.Checked; 
+            if (!cbSlideShowOff.Checked ) 
+                setSlideShowOn(false);
         }
 
         private void cbTopMost_CheckedChanged(object sender, EventArgs e)
@@ -5785,7 +5880,9 @@ namespace SymbolDB
             MarkDeleteAndContinue();
         }
         public void MarkDeleteAndContinue()
-        { 
+        {
+            ++countMarkedForDeletion;
+            tbMarkedForDeletion.Text = countMarkedForDeletion.ToString();
             showNextSlideNow();
             markForDeletion();
             ResumeSlideShow();
@@ -5795,9 +5892,330 @@ namespace SymbolDB
         {
             tbTargetFolder_TextChanged(sender, e);
         }
+        int idxSource = 0;
+        int numberMatching = 0;
+        Bitmap otherImage = null;
+        private void btFindMatchingImage2_Click(object sender, EventArgs e)
+        {
+            double rc = 0;
+            while (idxSource < gv.imageFileListCompare.getImageCount() - 2)
+            {
+                FileInfoItem fi;
+                fi = gv.imageFileListCompare.getIndexed(idxSource);
+                pbMatch.Image = BitmapFromSource(LoadImage(fi.fpath));
+              //  rc = CompareImages2(otherImage, mainImage);
+                rc = CompareImages2((Bitmap)pb1.Image, (Bitmap) pbMatch.Image);
+                if (rc > 80)
+                {
+                    ++numberMatching;
+                }
+                ++idxSource;
+               // tbImage3List.Text = idxSource.ToString();
+            }
+            return;
+        }
+        bool bOptimizedSearch = true;
+        private void btFindMatchingImageReset_Click(object sender, EventArgs e)
+        {
+            idxSource = 0;
+            numberMatching = 0;
+            pbMatch.Image = null;
+            btFindMatchingImage_Click(sender, e);
+        }
+
         //
-    }// CLASS MAIN
-}
+        private CancellationTokenSource _cts;
+        private ImageMatcher _matcher = new ImageMatcher();
+        private List<string> _matches = new List<string>();
+
+        private string _lastSearchFolder;
+        private async void btFindMatchingImage_Click(object sender, EventArgs e)
+        {
+            if (pb1.Image == null)
+            {
+                System.Windows.Forms.MessageBox.Show("Please load a source image first.");
+                return;
+            }
+
+            // ask user for folder to search
+            string searchFolder;
+            if (cbUseSameFolder.Checked && !string.IsNullOrEmpty(_lastSearchFolder))
+            {
+                searchFolder = _lastSearchFolder;
+            }
+            else
+            {
+                using var dlg = new FolderBrowserDialog();
+                if (dlg.ShowDialog() != DialogResult.OK) return;
+
+                searchFolder = dlg.SelectedPath;
+                _lastSearchFolder = searchFolder;
+                cbUseSameFolder.Checked = true;
+            }
+            tbSourceImageNumber.Text = searchFolder;
+            // ← HERE'S THE FIX: always initialize your CTS before using .Token
+            _cts?.Cancel();
+            _cts?.Dispose();
+            _cts = new CancellationTokenSource();
+
+            btFindMatchingImage.Enabled = false;
+            btDeleteMatchingImages.Enabled = false;
+            lbMatches.Items.Clear();
+            lblStatus.Text = "Searching…";
+
+            // marshal back to UI for each progress update
+            _matcher.ProgressCallback = (processed, found) =>
+            {
+                if (lblStatus.InvokeRequired)
+                {
+                    lblStatus.BeginInvoke(new Action(() =>
+                    {
+                        lblStatus.Text =
+                            $"Compared {processed:N0} files, found {found:N0} matches…";
+                    }));
+                }
+                else
+                {
+                    lblStatus.Text =
+                        $"Compared {processed:N0} files, found {found:N0} matches…";
+                }
+            };
+            List<string> results;
+            try
+            {
+                // kick off the search on a thread-pool thread
+                results = await Task.Run(() =>
+                    _matcher.FindMatches(
+                        mainImage: new Bitmap(pb1.Image),
+                        rootDirectory: searchFolder,
+                        sourceImagePath: finfo1.fpath,
+                        threshold: 0.98,
+                        cancellationToken: _cts.Token
+                    ), _cts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                // (should never happen now, because FindMatches no longer throws)
+                lblStatus.Text = "Cancelled";
+                btFindMatchingImage.Enabled = true;
+                btCancelFind.Enabled = false;
+                return;
+            }
+            // normalize the source path
+            string sourceNormalized = System.IO.Path
+                .GetFullPath(finfo1.fpath)
+                .TrimEnd(System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar);
+
+            // remove any result whose canonical path == source
+            results.RemoveAll(m =>
+            {
+                string mnorm = System.IO.Path
+                    .GetFullPath(m)
+                    .TrimEnd(System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar);
+                return string.Equals(mnorm, sourceNormalized, StringComparison.OrdinalIgnoreCase);
+            });
+
+            // populate UI
+            lbMatches.Items.AddRange(results.ToArray());
+            lblStatus.Text = $"Done: {results.Count:N0} matches.";
+
+            btFindMatchingImage.Enabled = true;
+            btDeleteMatchingImages.Enabled = results.Count > 0;
+
+            // ◦◦◦ THIS LINE ◦◦◦
+            _matches = results;
+
+        }
+
+
+        private void btDeleteMatchingImages_Click(object sender, EventArgs e)
+        {
+            if (_matches == null || _matches.Count == 0)
+            {
+                System.Windows.MessageBox.Show("No matches to delete.");
+                return;
+            }
+
+            var result = System.Windows.Forms.MessageBox.Show(
+                $"Are you sure you want to permanently delete {_matches.Count} files?",
+                "Confirm Deletion",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (result != DialogResult.Yes) return;
+            ClearAllPictureBoxesInUse();
+
+            _matcher.DeleteMatches(_matches);
+
+            // delete items from the  ImageFileList  gv.imageFileList1
+            int removedCount = 0;
+            // copy them into a string list so we can clear the ListBox as we go
+            var toDelete = lbMatches.Items
+                .Cast<string>()
+                .ToList();
+
+            foreach (var fullpath in toDelete)
+            {
+                // this will normalize and remove the entry if it exists
+                if (gv.imageFileList1.FindItemAndDelete(fullpath))
+                    removedCount++;
+            }
+            string slideNumber = tbImageNumber.Text;
+            showNextSlideImageFileList1(0, 1);
+            lblStatus.Text = "deleted";
+            //System.Windows.MessageBox.Show("Files deleted.");
+            _matches.Clear();
+            lbMatches.Items.Clear();
+            btDeleteMatchingImages.Enabled = false;
+            tbGoToSlide.Text = slideNumber;
+            gv.slideCount1 = gv.imageFileList1.getImageCount();
+        }
+
+        private void btCancelFind_Click(object sender, EventArgs e)
+        {
+            btCancelFind.Enabled = false;
+            _cts?.Cancel();
+        }
+
+        private void btClearAllPictureBoxesUse_Click(object sender, EventArgs e)
+        {
+            ClearAllPictureBoxesInUse();
+            reposition();
+        }
+
+        private void lbMatches_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            // make sure something is selected
+            if (lbMatches.SelectedItem is string path && File.Exists(path))
+            {
+                try
+                {
+                    // dispose the old image if any
+                    pbMatch.Image?.Dispose();
+
+                    // load new
+                    pbMatch.Image = new Bitmap(path);
+
+                    // update any UI or state you like
+                    
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.Forms.MessageBox.Show($"Unable to load image:\n{ex.Message}",
+                                    "Load Error",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void lbMatches_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            lbMatches_MouseDoubleClick(null, null);
+            var lb = (ListBox)sender;
+            int idx = lb.SelectedIndex;
+        }
+
+        private void btThumbnailImages_Click(object sender, EventArgs e)
+        {
+            // from your main form, e.g. on a menu or button:
+          
+            
+
+        }
+
+        private void btSizeWindow_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cbStopNextFolder_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tbRowCount_TextChanged(object sender, EventArgs e)
+        {
+            tbSourceImageNumber.Text = tbImageNumber.Text;
+        }
+
+        private void cbPanel1_CheckedChanged(object sender, EventArgs e)
+        {
+            panelMisc.Enabled = cbPanel1.Checked;
+            panelMisc.Visible = cbPanel1.Checked;
+            if (cbPanel1.Checked)
+                panelMisc.BringToFront();
+        }
+
+        private void cbPanel2_CheckedChanged(object sender, EventArgs e)
+        {
+            panelOther.Enabled = cbPanel2.Checked;
+            panelOther.Visible = cbPanel2.Checked;
+            if (cbPanel2.Checked)
+                panelOther.BringToFront();
+        }
+
+        //
+
+        public void MasterOff()
+        { 
+            bMasterStopSlideShow = true;
+            timer.Stop();
+            timer.Enabled = false;
+            cbMasterOFF.Checked = true;
+        }
+        public void MasterOn()
+        {
+            bMasterStopSlideShow = false;
+            timer.Enabled = true;
+            cbMasterOFF.Checked = false;
+        }
+        private void btResetTimerSlideShow_Click(object sender, EventArgs e)
+        {
+            MasterOn();
+        }
+
+        private void btExit_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void btMarkedForDeletion_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tbMarkedForDeletion_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            countMarkedForDeletion = 0;
+            tbMarkedForDeletion.Text = countMarkedForDeletion.ToString();
+        }
+
+        private void cbContinueAfterDelete2_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+        private ImageCache _imageCache;
+
+        private void btLoadImageCache_Click(object sender, EventArgs e)
+        {
+            _imageCache = new ImageCache(gv.imageFileList1, batchSize: 132);
+        }
+        int nextBatchStart = 0;
+        private void btImageCache2_Click(object sender, EventArgs e)
+        {
+            nextBatchStart += 132;
+        }
+        public void loadNextSet(int startingImageFileIdx)
+        { 
+            nextBatchStart = ((startingImageFileIdx + _imageCache._batchSize) / _imageCache._batchSize)
+                      * _imageCache._batchSize;
+            if (nextBatchStart < gv.imageFileList1.getImageCount())
+                _ = _imageCache.PreloadBatchAsync(nextBatchStart);
+        }
+    }
+}// CLASS MAIN
+
 
 /*
 dominated by a boxy old standby: 

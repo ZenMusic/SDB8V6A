@@ -218,6 +218,7 @@ namespace SymbolDB
         //----------- images ------------------- LIST -----LIST of IMAGES ---------------------
         public ImageFileList imageFileList1;
         public ImageFileList imageFileList2;
+        public ImageFileList imageFileListSearch;
         public ImageFileList deleteFileList1;
 
         public ImageFileList imageFileListCompare;

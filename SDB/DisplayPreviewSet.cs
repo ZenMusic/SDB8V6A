@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SymbolDB
@@ -60,6 +63,7 @@ namespace SymbolDB
         // int loadFromNum = 0;
         FileFunctions ff;
 
+        private readonly ImageCache _imageCache;
 
         public DisplayPreviewSet() //not used
         {
@@ -69,11 +73,13 @@ namespace SymbolDB
             rec2 = this.DisplayRectangle;
         }
 
-        public DisplayPreviewSet(GlobalVars g, int startingImageNumber = 0) /////////////////////// main init
+        public DisplayPreviewSet(GlobalVars g, /*ImageCache cache, */ int startingImageNumber = 0) /////////////////////// main init
         {
             InitializeComponent();
             WindowState = FormWindowState.Maximized;
             gv = g;
+           // _imageCache = cache;
+            this.DoubleBuffered = true;
 
             // tbLoading.Hide();
             timer.Tick += new EventHandler(timer_Tick); // Everytime timer ticks, timer_Tick will be called
@@ -344,6 +350,93 @@ namespace SymbolDB
         bool bUSE_OPTIMIZED_LOAD = true;
         int countMemFree = 0;
         bool bColorGray = true;
+
+        public int LoadSetAI(int startingImageNo)
+        {
+            SuspendLayout();                          // ➊ stop layout until we're done
+            int rc = 0;
+            int iStartPb = 0;
+            int prevStart = startingImageFileIdx;
+            bool singleStep = false;
+
+            // alternate background stripe
+            BackColor = bColorGray ? Color.LightGray : Color.LightBlue;
+            bColorGray = !bColorGray;
+
+            // clamp and remember
+            int totalImages = gv.imageFileList1.getImageCount();
+            if (startingImageNo < 0) startingImageNo = 0;
+            else if (startingImageNo >= totalImages)
+                startingImageNo = totalImages - maxPbIdxLoaded;
+            startingImageFileIdx = startingImageNo;
+
+            int imageIdx = startingImageFileIdx;
+            this.Text = $"Loading images ... from index {startingImageFileIdx:N0}";
+
+            // dispose only if we really jumped more than ±1
+            bool skipDispose = bUSE_OPTIMIZED_LOAD &&
+                               (startingImageNo == prevStart + 1 ||
+                                startingImageNo == prevStart - 1);
+
+            if (!skipDispose)
+            {
+                for (int i = 0; i < maxPbIdxLoaded; i++)
+                    pb[i].Image?.Dispose();
+            }
+
+            // optimized 1-step shift
+            if (bUSE_OPTIMIZED_LOAD && startingImageNo == prevStart + 1)
+            {
+                // shift left
+                for (int i = 0; i < maxPbIdxLoaded; i++)
+                    pb[i].Image = pb[i + 1].Image;
+
+                // fix tooltips
+                for (int i = 0, idx = startingImageFileIdx + 1; i < maxPbIdxLoaded; i++, idx++)
+                    pbToolTip.SetToolTip(pb[i], gv.imageFileList1.getIndexed(idx).fpath);
+
+                pb[maxPbIdxLoaded].Image = null;
+                iStartPb = maxPbIdxLoaded;
+                singleStep = true;
+                Load1Image(startingImageFileIdx + maxPbIdxLoaded, maxPbIdxLoaded);
+            }
+            else if (bUSE_OPTIMIZED_LOAD && startingImageNo == prevStart - 1)
+            {
+                // shift right
+                for (int i = maxPbIdxLoaded; i > 0; i--)
+                    pb[i].Image = pb[i - 1].Image;
+
+                // tooltips
+                for (int i = 1, idx = startingImageFileIdx; i <= maxPbIdxLoaded; i++, idx++)
+                    pbToolTip.SetToolTip(pb[i], gv.imageFileList1.getIndexed(idx).fpath);
+
+                pb[0].Image = null;
+                iStartPb = 0;
+                singleStep = true;
+                Load1Image(startingImageFileIdx, 0);
+            }
+
+            // full reload
+            if (!singleStep)
+                rc = LoadFromImageList2(startingImageFileIdx, iStartPb);
+
+            // NOW kick off async image loads so UI stays responsive
+            for (int i = 0; i <= maxPbIdxLoaded; i++)
+            {
+                string f = gv.imageFileList1.getIndexed(startingImageFileIdx + i).fpath;
+                LoadThumbnailAsync(i, f);
+            }
+
+            setTitle($"{startingImageFileIdx} thru {rc} of {gv.slideCount1}  » {pb[0].ImageLocation}");
+            tbLoading.Hide();
+
+            ResumeLayout();                          // ➋ re-enable layout + repaint
+            return rc;
+        }
+
+       
+
+
         public int LoadSet(int startingImageNo) //// load images ///////////////////////////////////////////////////////////////////
         {
             int rc = 0;
@@ -360,6 +453,7 @@ namespace SymbolDB
 
             bColorGray = !bColorGray;
             this.Refresh();
+            /*
             if (++countMemFree > 44)
             {
                 countMemFree = 0;
@@ -374,10 +468,12 @@ namespace SymbolDB
                     MessageBox.Show("Exception in memory free");
                 }
             }
-
-
-
-
+            */
+            if (false)
+            {
+                for (int i = 0; i < maxPbIdxLoaded; i++)
+                    pb[i].Image?.Dispose();
+            }
             lastSelectedPbIdx = -1; //unselect
 
             if (startingImageNo < 0)
@@ -389,7 +485,7 @@ namespace SymbolDB
             int imageFileItemIdx = startingImageFileIdx;
             int nextFileIdx4Single = 0;
 
-            this.Text = "Loading images ... from imageFile IDX " + startingImageNo.ToString();
+            this.Text = $"Loading images ... from imageFile IDX {startingImageNo}";
 
             // HAD THE FREE MEMORY HERE
             // MAXPB
@@ -480,6 +576,8 @@ namespace SymbolDB
             }
             if (!bSingle)
                 rc = LoadFromImageList2(startingImageFileIdx, iStartPb);
+
+
             setTitle(startingImageNo.ToString() + " thru " + rc.ToString() + " of " + gv.slideCount1.ToString() + " >>>>>  " + pb[0].ImageLocation
                 + gv.imageFileList1.getIndexed(startingImageNo).fpath
                 );
@@ -562,6 +660,53 @@ namespace SymbolDB
         // load the set of PB images from ImageList
         //
         bool bDeleteInvalidImages = false;
+        /// <summary>
+        /// Asynchronously load each PictureBox image with a max degree of parallelism.
+        /// </summary>
+        private async Task LoadVisibleImagesAsync(int startFileIdx)
+        {
+            int count = maxPbIdxLoaded + 1;
+            var sem = new SemaphoreSlim(4); // at most 4 concurrent loads
+            var tasks = new List<Task>(count);
+
+            for (int i = 0; i < count; i++)
+            {
+                int pbIdx = i;
+                string fpath = gv.imageFileList1.getIndexed(startFileIdx + i)?.fpath;
+                if (string.IsNullOrEmpty(fpath)) continue;
+
+                tasks.Add(Task.Run(async () =>
+                {
+                    await sem.WaitAsync();
+                    try
+                    {
+                        // Load from stream so we can dispose it properly
+                        using var fs = File.OpenRead(fpath);
+                        var img = Image.FromStream(fs);
+
+                        // marshal back to UI thread
+                        if (!IsDisposed)
+                            Invoke((Action)(() =>
+                            {
+                                var old = pb[pbIdx].Image;
+                                pb[pbIdx].Image = img;
+                                old?.Dispose();
+                                pb[pbIdx].Refresh();
+                            }));
+                    }
+                    catch
+                    {
+                        // log or ignore individual load failures
+                    }
+                    finally
+                    {
+                        sem.Release();
+                    }
+                }));
+            }
+
+            await Task.WhenAll(tasks);
+        }
 
         public int LoadFromImageList2(int iStartImageNum, int iStartPbNum) //// load images
         {
@@ -576,7 +721,7 @@ namespace SymbolDB
             if (bDisplayText)
                 tbLoading.Visible = true;
             //  this.Refresh();
-
+            gv.slideCount1 = gv.imageFileList1.getImageCount();
             maxImagesToLoad = numRows * numColumns;
 
             if (iStartImageNum < 0)
@@ -1585,6 +1730,7 @@ namespace SymbolDB
                 startingImageFileIdx = imageIdx;
                 hideDisplayFileName();
                 this.LoadSet(this.startingImageFileIdx);
+                gv.mainWindow.SetNextSlideNumber(imageIdx);
             }
         }
 
@@ -1602,7 +1748,22 @@ namespace SymbolDB
             }
 
         }
-
+        //
+        //
+        async void LoadThumbnailAsync(int pbIndex, string file)
+        {
+            Bitmap thumb = await Task.Run(() => WindowsThumbnailProvider
+                                        .GetThumbnail(file, THUMB_SIZE, THUMB_SIZE2, ThumbnailOptions.None)
+                                      );
+            if (thumb != null && !this.IsDisposed)
+                this.Invoke(() => {
+                    var old = pb[pbIndex].Image;
+                    pb[pbIndex].Image = thumb;
+                    old?.Dispose();
+                });
+        }
+        //
+        //
         private void DisplayPreviewSet_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             int x = e.X;

@@ -344,11 +344,9 @@
             this.cbAVIF = new System.Windows.Forms.CheckBox();
             this.cbRN = new System.Windows.Forms.CheckBox();
             this.tbExt = new System.Windows.Forms.TextBox();
-            this.axWindowsMediaPlayer2 = new AxWMPLib.AxWindowsMediaPlayer();
-            this.axWindowsMediaPlayer1 = new AxWMPLib.AxWindowsMediaPlayer();
             this.cbCompareToPreviousImage = new System.Windows.Forms.CheckBox();
-            this.axWindowsMediaPlayer3 = new AxWMPLib.AxWindowsMediaPlayer();
             this.btCopySuccess = new System.Windows.Forms.Button();
+            this.axWindowsMediaPlayer1 = new AxWMPLib.AxWindowsMediaPlayer();
             this.gbFolder.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numLastFolder)).BeginInit();
@@ -366,9 +364,7 @@
             this.panel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pb2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numCopyBatchNumber)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer3)).BeginInit();
             this.SuspendLayout();
             // 
             // btClose
@@ -1044,7 +1040,7 @@
             // 
             this.btExit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.btExit.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btExit.Location = new System.Drawing.Point(1197, 443);
+            this.btExit.Location = new System.Drawing.Point(117, 443);
             this.btExit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btExit.Name = "btExit";
             this.btExit.Size = new System.Drawing.Size(80, 33);
@@ -1389,7 +1385,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(1492, 456);
+            this.label4.Location = new System.Drawing.Point(1500, 447);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(80, 16);
@@ -1738,7 +1734,7 @@
             // 
             // btGetMovieSize
             // 
-            this.btGetMovieSize.Location = new System.Drawing.Point(1416, 474);
+            this.btGetMovieSize.Location = new System.Drawing.Point(1510, 470);
             this.btGetMovieSize.Margin = new System.Windows.Forms.Padding(4);
             this.btGetMovieSize.Name = "btGetMovieSize";
             this.btGetMovieSize.Size = new System.Drawing.Size(45, 27);
@@ -1985,7 +1981,7 @@
             // cbDEBUG
             // 
             this.cbDEBUG.AutoSize = true;
-            this.cbDEBUG.Location = new System.Drawing.Point(1485, 480);
+            this.cbDEBUG.Location = new System.Drawing.Point(1813, 95);
             this.cbDEBUG.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.cbDEBUG.Name = "cbDEBUG";
             this.cbDEBUG.Size = new System.Drawing.Size(77, 20);
@@ -2762,13 +2758,14 @@
             // cbCopyFileListMain
             // 
             this.cbCopyFileListMain.AutoSize = true;
-            this.cbCopyFileListMain.Location = new System.Drawing.Point(1047, 450);
+            this.cbCopyFileListMain.Location = new System.Drawing.Point(1058, 452);
             this.cbCopyFileListMain.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.cbCopyFileListMain.Name = "cbCopyFileListMain";
             this.cbCopyFileListMain.Size = new System.Drawing.Size(116, 20);
             this.cbCopyFileListMain.TabIndex = 264;
             this.cbCopyFileListMain.Text = "Return File List";
             this.cbCopyFileListMain.UseVisualStyleBackColor = true;
+            this.cbCopyFileListMain.CheckedChanged += new System.EventHandler(this.cbCopyFileListMain_CheckedChanged);
             // 
             // btTestAddRowToSubWindow
             // 
@@ -3969,24 +3966,6 @@
             this.tbExt.Size = new System.Drawing.Size(67, 27);
             this.tbExt.TabIndex = 370;
             // 
-            // axWindowsMediaPlayer2
-            // 
-            this.axWindowsMediaPlayer2.Enabled = true;
-            this.axWindowsMediaPlayer2.Location = new System.Drawing.Point(8, 8);
-            this.axWindowsMediaPlayer2.Name = "axWindowsMediaPlayer2";
-            this.axWindowsMediaPlayer2.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axWindowsMediaPlayer2.OcxState")));
-            this.axWindowsMediaPlayer2.Size = new System.Drawing.Size(75, 23);
-            this.axWindowsMediaPlayer2.TabIndex = 364;
-            // 
-            // axWindowsMediaPlayer1
-            // 
-            this.axWindowsMediaPlayer1.Enabled = true;
-            this.axWindowsMediaPlayer1.Location = new System.Drawing.Point(0, 0);
-            this.axWindowsMediaPlayer1.Name = "axWindowsMediaPlayer1";
-            this.axWindowsMediaPlayer1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axWindowsMediaPlayer1.OcxState")));
-            this.axWindowsMediaPlayer1.Size = new System.Drawing.Size(75, 23);
-            this.axWindowsMediaPlayer1.TabIndex = 363;
-            // 
             // cbCompareToPreviousImage
             // 
             this.cbCompareToPreviousImage.AutoSize = true;
@@ -3999,15 +3978,6 @@
             this.cbCompareToPreviousImage.UseVisualStyleBackColor = true;
             this.cbCompareToPreviousImage.CheckedChanged += new System.EventHandler(this.cbCompareToPreviousImage_CheckedChanged);
             // 
-            // axWindowsMediaPlayer3
-            // 
-            this.axWindowsMediaPlayer3.Enabled = true;
-            this.axWindowsMediaPlayer3.Location = new System.Drawing.Point(673, 689);
-            this.axWindowsMediaPlayer3.Name = "axWindowsMediaPlayer3";
-            this.axWindowsMediaPlayer3.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axWindowsMediaPlayer3.OcxState")));
-            this.axWindowsMediaPlayer3.Size = new System.Drawing.Size(75, 23);
-            this.axWindowsMediaPlayer3.TabIndex = 372;
-            // 
             // btCopySuccess
             // 
             this.btCopySuccess.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
@@ -4019,6 +3989,15 @@
             this.btCopySuccess.Text = "Copy";
             this.btCopySuccess.UseVisualStyleBackColor = false;
             // 
+            // axWindowsMediaPlayer1
+            // 
+            this.axWindowsMediaPlayer1.Enabled = true;
+            this.axWindowsMediaPlayer1.Location = new System.Drawing.Point(1418, 459);
+            this.axWindowsMediaPlayer1.Name = "axWindowsMediaPlayer1";
+            this.axWindowsMediaPlayer1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axWindowsMediaPlayer1.OcxState")));
+            this.axWindowsMediaPlayer1.Size = new System.Drawing.Size(60, 38);
+            this.axWindowsMediaPlayer1.TabIndex = 363;
+            // 
             // TraverserDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -4026,7 +4005,6 @@
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.ClientSize = new System.Drawing.Size(2557, 724);
             this.Controls.Add(this.btCopySuccess);
-            this.Controls.Add(this.axWindowsMediaPlayer3);
             this.Controls.Add(this.cbCompareToPreviousImage);
             this.Controls.Add(this.tbExt);
             this.Controls.Add(this.cbRN);
@@ -4034,7 +4012,6 @@
             this.Controls.Add(this.progressBar2);
             this.Controls.Add(this.tbMainTimer);
             this.Controls.Add(this.cbCaptureWindowFocusAll);
-            this.Controls.Add(this.axWindowsMediaPlayer2);
             this.Controls.Add(this.axWindowsMediaPlayer1);
             this.Controls.Add(this.btSetMainTarget);
             this.Controls.Add(this.cbSetSpecialFolder);
@@ -4292,8 +4269,7 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "TraverserDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "Select a folder containing Images to be viewed or managed and then  click Travers" +
-    "e to build the Image List";
+            this.Text = "find";
             this.Activated += new System.EventHandler(this.TraverserDialog_Activated);
             this.Deactivate += new System.EventHandler(this.TraverserDialog_Deactivate);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TraverserDialog_FormClosing);
@@ -4320,9 +4296,7 @@
             this.panel5.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pb2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numCopyBatchNumber)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer3)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -4639,7 +4613,6 @@
         private System.Windows.Forms.CheckBox cbSetSpecialFolder;
         private System.Windows.Forms.Button btSetMainTarget;
         private AxWMPLib.AxWindowsMediaPlayer axWindowsMediaPlayer1;
-        private AxWMPLib.AxWindowsMediaPlayer axWindowsMediaPlayer2;
         private System.Windows.Forms.CheckBox cbCaptureWindowFocusAll;
         private System.Windows.Forms.TextBox tbMainTimer;
         private System.Windows.Forms.ProgressBar progressBar2;
@@ -4647,7 +4620,6 @@
         private System.Windows.Forms.CheckBox cbRN;
         private System.Windows.Forms.TextBox tbExt;
         private System.Windows.Forms.CheckBox cbCompareToPreviousImage;
-        private AxWMPLib.AxWindowsMediaPlayer axWindowsMediaPlayer3;
         private System.Windows.Forms.Button btCopySuccess;
     }
 }

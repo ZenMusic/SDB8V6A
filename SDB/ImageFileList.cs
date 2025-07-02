@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -38,7 +39,36 @@ namespace SymbolDB
             var value = finfoList.FirstOrDefault(item => item.dpath == path);
             return (value != null);
         }
-        
+        public bool FindItemAndDelete(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+                return false;
+
+            // normalize incoming path
+            string normalizedInput = Path
+                .GetFullPath(path)
+                .TrimEnd(System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar);
+
+            for (int i = 0; i < finfoList.Count; i++)
+            {
+                var fi = finfoList[i];
+                if (string.IsNullOrEmpty(fi.fpath))
+                    continue;
+
+                // normalize stored path
+                string normalizedStored = Path
+                    .GetFullPath(fi.fpath)
+                    .TrimEnd(System.IO.Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
+                if (string.Equals(normalizedStored, normalizedInput, StringComparison.OrdinalIgnoreCase))
+                {
+                    finfoList.RemoveAt(i);
+                    return true;
+                }
+            }
+
+            return false;
+        }
         public int addItem(string fpath, string type1, int level1)
         {
             if (fpath.Contains("\\"))
