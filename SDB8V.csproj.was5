@@ -1,0 +1,156 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>false</UseWPF>
+
+    <RootNamespace>SDB8V</RootNamespace>
+    <AssemblyName>SDB8V</AssemblyName>
+
+    <LangVersion>10.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <ForceDesignerDpiUnaware>true</ForceDesignerDpiUnaware>
+
+    <PlatformTarget>x64</PlatformTarget>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+    <ApplicationIcon>SDB.ico</ApplicationIcon>
+
+    <PublishSingleFile>false</PublishSingleFile>
+    <SelfContained>false</SelfContained>
+
+    <!-- Keep default publish/runtime performance toggles explicit and disabled -->
+    <EnableTrim>false</EnableTrim>
+    <ReadyToRun>false</ReadyToRun>
+
+    <!-- Suppress known/intentional analyzer warnings -->
+    <NoWarn>$(NoWarn);CA1416;CS8618</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DocumentationFile>GiveHelpDoc.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>SDB4.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DocumentationFile>GiveHelpDoc.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>SDB4.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <!-- turn off signing for this copy; keep manifest generation -->
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+    <GenerateManifests>true</GenerateManifests>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+
+  <!-- designer/dataset metadata (preserve for design-time tooling) -->
+  <ItemGroup>
+    <Compile Update="ImagePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Model1.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Model1.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Model1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Update="SDB01DataSet.cs">
+      <DependentUpon>SDB01DataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Update="WMPcontroller.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+
+    <None Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
+    <None Update="Model1.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Model1.Context.cs</LastGenOutput>
+    </None>
+    <None Update="Model1.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Model1.cs</LastGenOutput>
+    </None>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="SDB01DataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- native LibVLC runtime package (match version to LibVLCSharp requirements) -->
+    <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.21" />
+    <PackageReference Include="LibVLCSharp.WinForms" Version="3.9.4" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3595.46" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <PackageReference Include="System.DirectoryServices" Version="9.0.9" />
+    <PackageReference Include="System.Management" Version="9.0.9" />
+    <PackageReference Include="EntityFramework" Version="6.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft.NET\Primary Interop Assemblies\Microsoft.mshtml.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Ensure the image is treated as content and copied to output -->
+    <Content Include="safe.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+
+    <Content Include="SDB.ico" />
+    <Content Include="SDB01.sdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SDB3LoacalDB1.sdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Remove legacy bootstrapper packages (kept for clarity) -->
+    <BootstrapperPackage Remove=".NETFramework,Version=v4.8" />
+    <BootstrapperPackage Remove="Microsoft.Net.Client.3.5" />
+    <BootstrapperPackage Remove="Microsoft.Net.Framework.3.5.SP1" />
+    <BootstrapperPackage Remove="Microsoft.Windows.Installer.4.5" />
+  </ItemGroup>
+
+  <ItemGroup><!-- If you need to prune legacy source files or embedded resources, prefer editing the project or using Directory.Build.props -->
+    <!-- Legacy explicit <Compile Remove="..."> entries were removed for clarity. Re-add only when necessary. -->
+  
+    <Compile Remove="FileMetadataHelper.cs" />
+  
+    <Compile Remove="Movies2.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Movies2.resx" />
+  </ItemGroup>
+</Project>

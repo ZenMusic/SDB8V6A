@@ -1,0 +1,34 @@
+name: Increment Version
+
+on:
+  workflow_dispatch:
+
+jobs:
+  increment-version:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Increment version
+      run: |
+        current_version=$(dotnet msbuild /t:GetVersion /nologo | grep -oP '\d+\.\d+\.\d+')
+        echo "Current version: $current_version"
+        IFS='.' read -r major minor patch <<< "$current_version"
+        new_version="$major.$minor.$((patch + 1))"
+        echo "New version: $new_version"
+        dotnet msbuild /t:SetVersion /p:Version=$new_version
+
+    - name: Commit and push new version
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add .
+        git commit -m "Increment version to $new_version"
+        git push

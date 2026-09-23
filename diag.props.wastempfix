@@ -1,0 +1,5 @@
+<Project>
+  <Target Name="ShowTargetFramework" BeforeTargets="BeforeBuild">
+    <Message Text="Resolved TargetFramework = '$(TargetFramework)'" Importance="High" />
+  </Target>
+</Project>
