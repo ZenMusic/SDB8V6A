@@ -264,6 +264,7 @@ namespace SymbolDB
         public int IDX_LASTDIR3 = SIcolNum++; //5
 
         public Main mainWindow;
+        public SlideShowWpf slideShowMain;
         public bool bLoadFromStreamPreview = true;
         public bool bAutoPlayMovies = false;
         //

@@ -96,6 +96,7 @@ namespace SymbolDB  //dmc26
         // Add these fields to the DialogTraverser class (after existing field declarations)
         private bool _metadataUpdatedAfterTraversal = false;
         private string _lastTraversalType = ""; // "images" or "videos"
+        private SlideShowWpf _slideShowWpf;
 
         public DialogTraverser(GlobalVars g, Main mainParent, int imode, FileFunctions f, DialogTraverser parent = null) /////////////////////////////////////////////////////////////////////////
         {
@@ -1948,7 +1949,7 @@ namespace SymbolDB  //dmc26
         {
             if (string.IsNullOrEmpty(fpath))
                 return;
-            
+
             if (gv.initParm1List.Count > 0)
             {
                 if (gv.initParm1List[0].sourceDir1.Equals(fpath))
@@ -2154,7 +2155,7 @@ namespace SymbolDB  //dmc26
             fpath.lastAccessDate = DateTime.Now;
             gv.folderHistoryList.Add(fpath);
         }
-        
+
         bool bAllowMovieSelection = false;
         public void TraverseFolder(string dpath) //NOT USED
         {
@@ -3030,6 +3031,29 @@ namespace SymbolDB  //dmc26
                 dgv1_SelectionChanged(null, null);
 
                 btUpdateMetadata.Enabled = true;
+
+                if (!bThisIsSubWindow && _lastTraversalType == "images")
+                    OpenSlideShowWpf();
+            }
+        }
+
+        private void OpenSlideShowWpf()
+        {
+            if (gv.imageFileList1?.finfoList == null || gv.imageFileList1.finfoList.Count == 0)
+                return;
+
+            if (_slideShowWpf == null || !_slideShowWpf.IsLoaded)
+            {
+                _slideShowWpf = new SlideShowWpf(gv, this);
+                new System.Windows.Interop.WindowInteropHelper(_slideShowWpf).Owner = Handle;
+                System.Windows.Forms.Integration.ElementHost.EnableModelessKeyboardInterop(_slideShowWpf);
+                _slideShowWpf.Closed += (_, _) => _slideShowWpf = null;
+                _slideShowWpf.Show();
+            }
+            else
+            {
+                _slideShowWpf.RefreshImageList();
+                _slideShowWpf.Activate();
             }
         }
         //
@@ -3408,6 +3432,7 @@ namespace SymbolDB  //dmc26
                 bSavedFile = true;
                 dgvFileInfo.DataSource = imageFileList1.finfoList;
                 //dmc26 AutoSizeDGVColumns(); // load imagefile1
+                OpenSlideShowWpf();
             }
             gv.setCursorDefault();
             //formatDataGridViewFileList();
@@ -6974,7 +6999,7 @@ namespace SymbolDB  //dmc26
         private bool _useMovie;
 
         bool windowLoaded = false;
-        
+
         private void cmbSearchExtensions_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cmbSearchExtensions.SelectedItem == null)
@@ -11205,6 +11230,11 @@ namespace SymbolDB  //dmc26
 
             // Reload combo in case categories were added / removed / renamed
             PopulateSearchExtensionsComboBox();
+        }
+
+        private void btDisplaySlideShow_Click(object sender, EventArgs e)
+        {
+            OpenSlideShowWpf();
         }
     }
 }

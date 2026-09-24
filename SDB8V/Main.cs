@@ -5968,7 +5968,29 @@ namespace SymbolDB
 
         }
         public AllDisplaysInfoForm _allDisplaysInfoForm;
+        public void ShowDisplayNames(bool bShow)
+        {
+            if (!bShow)
+            {
+                bShowDisplays = false;
+                try { ShowMonitors(false); } catch { }
 
+                _allDisplaysInfoForm?.Close();
+                //_allDisplaysInfoForm = null;
+
+                lvScreenInfo.SendToBack();
+            }
+            else
+            {
+                bShowDisplays = true;
+                DisplayAllScreensInfo();
+                try { ShowMonitors(true); } catch { }
+
+
+
+                lvScreenInfo.BringToFront();
+            }
+        }
         private void cbShowDisplayNames_CheckedChanged(object sender, EventArgs e)
         {
             if (!cbShowDisplayNames.Checked)

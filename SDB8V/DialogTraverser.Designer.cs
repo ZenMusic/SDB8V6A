@@ -365,6 +365,7 @@
             panelPlaybackControls = new System.Windows.Forms.Panel();
             btnEditSearchExtensions = new System.Windows.Forms.Button();
             tbExtensionsInUse = new System.Windows.Forms.TextBox();
+            btDisplaySlideShow = new System.Windows.Forms.Button();
             gbFolder.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvFileInfo).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numLastFolder).BeginInit();
@@ -383,9 +384,9 @@
             ((System.ComponentModel.ISupportInitialize)sliderSlowMotion).BeginInit();
             panelPlaybackControls.SuspendLayout();
             SuspendLayout();
-            // 
+            //
             // btClose
-            // 
+            //
             btClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
             btClose.Location = new System.Drawing.Point(666, 426);
             btClose.Margin = new System.Windows.Forms.Padding(4);
@@ -3949,7 +3950,7 @@
             // 
             // btDisplay3A
             // 
-            btDisplay3A.Location = new System.Drawing.Point(1190, 392);
+            btDisplay3A.Location = new System.Drawing.Point(970, 344);
             btDisplay3A.Margin = new System.Windows.Forms.Padding(4);
             btDisplay3A.Name = "btDisplay3A";
             btDisplay3A.Size = new System.Drawing.Size(67, 21);
@@ -4251,12 +4252,24 @@
             tbExtensionsInUse.Size = new System.Drawing.Size(346, 22);
             tbExtensionsInUse.TabIndex = 415;
             // 
+            // btDisplaySlideShow
+            // 
+            btDisplaySlideShow.Location = new System.Drawing.Point(970, 317);
+            btDisplaySlideShow.Margin = new System.Windows.Forms.Padding(4);
+            btDisplaySlideShow.Name = "btDisplaySlideShow";
+            btDisplaySlideShow.Size = new System.Drawing.Size(106, 21);
+            btDisplaySlideShow.TabIndex = 416;
+            btDisplaySlideShow.Text = "Slide Show";
+            btDisplaySlideShow.UseVisualStyleBackColor = true;
+            btDisplaySlideShow.Click += btDisplaySlideShow_Click;
+            // 
             // DialogTraverser
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             BackColor = System.Drawing.SystemColors.ActiveCaption;
             ClientSize = new System.Drawing.Size(2237, 663);
+            Controls.Add(btDisplaySlideShow);
             Controls.Add(tbExtensionsInUse);
             Controls.Add(btnEditSearchExtensions);
             Controls.Add(btPlaybackControl);
@@ -4919,5 +4932,6 @@
         private System.Windows.Forms.Panel panelPlaybackControls;
         private System.Windows.Forms.Button btnEditSearchExtensions;
         private System.Windows.Forms.TextBox tbExtensionsInUse;
+        private System.Windows.Forms.Button btDisplaySlideShow;
     }
 }

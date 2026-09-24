@@ -1,0 +1,39 @@
+<Window x:Class="SymbolDB.Display1Wpf"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Display1Wpf"
+        Width="1200" Height="800" MinWidth="518" MinHeight="512"
+        Background="Black" WindowStartupLocation="CenterScreen"
+        PreviewKeyDown="Window_PreviewKeyDown" Closed="Window_Closed">
+    <Grid x:Name="ImageSurface" Background="Black" ClipToBounds="True"
+          MouseLeftButtonDown="ImageSurface_MouseLeftButtonDown"
+          MouseMove="ImageSurface_MouseMove"
+          MouseLeftButtonUp="ImageSurface_MouseLeftButtonUp"
+          MouseWheel="ImageSurface_MouseWheel"
+          ContextMenuOpening="ImageSurface_ContextMenuOpening">
+        <Grid.ContextMenu>
+            <ContextMenu>
+                <MenuItem x:Name="AnnotationMenuItem" Header="Annotation Mode" IsCheckable="True" Click="Annotation_Click" />
+                <MenuItem Header="SlideShow Mode" Click="SlideShow_Click" />
+                <MenuItem Header="reset" Click="Reset_Click" />
+                <!-- These three menu commands have no action in Display1.cs. -->
+                <MenuItem Header="toolStripMenuItem1" IsEnabled="False" />
+                <MenuItem Header="Redraw" Click="Redraw_Click" />
+                <MenuItem Header="pb2" IsEnabled="False" />
+                <MenuItem Header="Close this window" Click="CloseWindow_Click" />
+                <MenuItem Header="Exit" IsEnabled="False" />
+                <MenuItem Header="Catalog Images" Click="CatalogImages_Click" />
+                <MenuItem Header="Full Screen Mode" Click="FullScreen_Click" />
+                <MenuItem Header="Resizable with title bar" Click="Resizable_Click" />
+                <MenuItem Header="Show All Tags" Click="ShowAllTags_Click" />
+                <MenuItem Header="monitor folder" Click="MonitorFolder_Click" />
+                <MenuItem x:Name="HoldSlideMenuItem" Header="Hold This Slide" IsCheckable="True" Click="HoldSlide_Click" />
+            </ContextMenu>
+        </Grid.ContextMenu>
+        <Image x:Name="DisplayedImage" Stretch="Uniform" />
+        <Canvas x:Name="AnnotationCanvas" IsHitTestVisible="False" />
+        <TextBlock x:Name="StatusText" VerticalAlignment="Top" HorizontalAlignment="Left"
+                   Margin="12" Padding="8,4" Foreground="White" Background="#B0000000"
+                   Text="Right-click for display options" Visibility="Collapsed" />
+    </Grid>
+</Window>

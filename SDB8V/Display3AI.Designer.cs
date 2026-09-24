@@ -160,7 +160,7 @@
             // 
             pb1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             pb1.BackColor = System.Drawing.Color.Black;
-            pb1.Location = new System.Drawing.Point(2, 1);
+            pb1.Location = new System.Drawing.Point(2, 32);
             pb1.Margin = new System.Windows.Forms.Padding(0);
             pb1.MinimumSize = new System.Drawing.Size(111, 111);
             pb1.Name = "pb1";

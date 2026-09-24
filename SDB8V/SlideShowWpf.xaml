@@ -1,0 +1,264 @@
+<Window x:Class="SymbolDB.SlideShowWpf"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="SDB8 SlideShow"
+        Width="1440"
+        Height="900"
+        MinWidth="1000"
+        MinHeight="650"
+        WindowStartupLocation="CenterScreen"
+        Background="#171820"
+        Foreground="#E8E8EC"
+        PreviewKeyDown="Window_PreviewKeyDown">
+    <Window.Resources>
+        <SolidColorBrush x:Key="PanelBrush" Color="#23242D" />
+        <SolidColorBrush x:Key="PanelAltBrush" Color="#2B2D38" />
+        <SolidColorBrush x:Key="BorderBrush" Color="#3A3D49" />
+        <SolidColorBrush x:Key="MutedBrush" Color="#A5A7B2" />
+        <SolidColorBrush x:Key="AccentBrush" Color="#4E91E8" />
+        <Style TargetType="Button">
+            <Setter Property="Foreground" Value="#ECECF1" />
+            <Setter Property="Background" Value="#343642" />
+            <Setter Property="BorderBrush" Value="#4A4D5A" />
+            <Setter Property="Padding" Value="12,7" />
+            <Setter Property="Margin" Value="3" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Foreground" Value="#F1F1F4" />
+            <Setter Property="Background" Value="#30323C" />
+            <Setter Property="BorderBrush" Value="#494C59" />
+            <Setter Property="Padding" Value="8,5" />
+            <Setter Property="CaretBrush" Value="White" />
+        </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="#D6D7DC" />
+            <Setter Property="Margin" Value="0,5" />
+        </Style>
+        <Style x:Key="SectionTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="#DADBE1" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+        </Style>
+        <Style x:Key="InspectorLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
+            <Setter Property="Margin" Value="0,3,8,3" />
+        </Style>
+        <Style x:Key="InspectorValue" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#F0F0F3" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0,3,0,3" />
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="58" />
+            <RowDefinition Height="48" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="42" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="#20212A" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Padding="8">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="260" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="FolderTextBox" Grid.Column="0" Margin="3" IsReadOnly="True" VerticalContentAlignment="Center" />
+                <Button Grid.Column="1" Content="Traverser" Click="ShowTraverser_Click" />
+                <TextBox x:Name="SearchTextBox" Grid.Column="2" Margin="6,3" VerticalContentAlignment="Center" ToolTip="Search filename or full path" KeyDown="SearchTextBox_KeyDown" />
+                <StackPanel Grid.Column="3" Orientation="Horizontal">
+                    <Button Content="Search" Click="Search_Click" />
+                    <Button Content="Preview Set" Click="ShowPreviewSet_Click" />
+                    <Button Content="Main" Click="ShowMain_Click" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1" Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Padding="10,3">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <CheckBox x:Name="cbShowDisplayNames" Content="Show Display Names" Margin="6,0,20,0"
+                          VerticalAlignment="Center" Checked="ShowDisplayNames_Changed" Unchecked="ShowDisplayNames_Changed" />
+                <CheckBox x:Name="cbDisplay1" Content="Display 1" Tag="1" Margin="6,0"
+                          VerticalAlignment="Center" Checked="Display_Changed" Unchecked="Display_Changed" />
+                <CheckBox x:Name="cbDisplay2" Content="Display 2" Tag="2" Margin="6,0"
+                          VerticalAlignment="Center" Checked="Display_Changed" Unchecked="Display_Changed" />
+                <CheckBox x:Name="cbDisplay3" Content="Display 3" Tag="3" Margin="6,0"
+                          VerticalAlignment="Center" Checked="Display_Changed" Unchecked="Display_Changed" />
+                <CheckBox x:Name="cbDisplay4" Content="Display 4" Tag="4" Margin="6,0"
+                          VerticalAlignment="Center" Checked="Display_Changed" Unchecked="Display_Changed" />
+                <Button x:Name="btFullScreenAll" Content="Full Screen All" Margin="18,3,3,3"
+                        Click="FullScreenAll_Click" />
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Row="2" Margin="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="320" />
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0" Margin="0,0,8,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="44" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="52" />
+                    <RowDefinition Height="142" />
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Padding="10,5">
+                    <Grid>
+                        <TextBlock x:Name="TitleTextBlock" FontSize="17" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                        <TextBlock x:Name="PositionTextBlock" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" />
+                    </Grid>
+                </Border>
+
+                <Border Grid.Row="1" Background="#101116" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1,0,1,1">
+                    <Image x:Name="MainImage" Stretch="Uniform" Margin="8" />
+                </Border>
+
+                <Border Grid.Row="2" Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1,0,1,1" Padding="5">
+                    <Grid>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                            <Button Content="|◀" Click="First_Click" ToolTip="First image" />
+                            <Button Content="Previous" Click="Previous_Click" />
+                            <Button x:Name="PlayPauseButton" Content="Play" Click="PlayPause_Click" MinWidth="70" />
+                            <Button Content="Next" Click="Next_Click" />
+                            <Button Content="▶|" Click="Last_Click" ToolTip="Last image" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <TextBlock Text="Jump to" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Margin="8,0" />
+                            <TextBox x:Name="JumpTextBox"
+                                     Width="90"
+                                     IsReadOnly="False"
+                                     IsEnabled="True"
+                                     IsHitTestVisible="True"
+                                     Focusable="True"
+                                     IsTabStop="True"
+                                     VerticalContentAlignment="Center"
+                                     KeyDown="JumpTextBox_KeyDown"
+                                     GotKeyboardFocus="JumpTextBox_GotKeyboardFocus" />
+                            <Button Content="Go" Click="Jump_Click" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Row="3" Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1,0,1,1" Padding="6">
+                    <ScrollViewer x:Name="FilmstripScrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                        <ItemsControl x:Name="FilmstripItemsControl">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Tag="{Binding Index}" Click="Thumbnail_Click" Padding="2" Margin="4" Background="{Binding Background}">
+                                        <Grid Width="138" Height="108">
+                                            <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" />
+                                            <Border Background="#99000000" VerticalAlignment="Bottom" Padding="4,2">
+                                                <TextBlock Text="{Binding Caption}" Foreground="White" TextTrimming="CharacterEllipsis" />
+                                            </Border>
+                                        </Grid>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+
+            <Border Grid.Column="1" Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Padding="14">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <Border x:Name="DisplayInfoPanel" Visibility="Collapsed" Background="{StaticResource PanelAltBrush}"
+                                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Padding="8" Margin="0,0,0,14">
+                            <StackPanel>
+                                <TextBlock Text="Connected displays" Style="{StaticResource SectionTitle}" />
+                                <ItemsControl x:Name="DisplayInfoItemsControl">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding}" Foreground="{StaticResource MutedBrush}"
+                                                       TextWrapping="Wrap" Margin="0,0,0,8" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                        <TextBlock Text="Inspector" Style="{StaticResource SectionTitle}" FontSize="17" />
+                        <Separator Background="{StaticResource BorderBrush}" />
+                        <TextBlock Text="File" Style="{StaticResource SectionTitle}" Margin="0,14,0,8" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="75" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Text="Filename" Style="{StaticResource InspectorLabel}" />
+                            <TextBlock x:Name="FileNameValue" Grid.Row="0" Grid.Column="1" Style="{StaticResource InspectorValue}" />
+                            <TextBlock Grid.Row="1" Text="Folder" Style="{StaticResource InspectorLabel}" />
+                            <TextBlock x:Name="FolderValue" Grid.Row="1" Grid.Column="1" Style="{StaticResource InspectorValue}" />
+                            <TextBlock Grid.Row="2" Text="Full path" Style="{StaticResource InspectorLabel}" />
+                            <TextBlock x:Name="FullPathValue" Grid.Row="2" Grid.Column="1" Style="{StaticResource InspectorValue}" />
+                            <TextBlock Grid.Row="3" Text="Type" Style="{StaticResource InspectorLabel}" />
+                            <TextBlock x:Name="TypeValue" Grid.Row="3" Grid.Column="1" Style="{StaticResource InspectorValue}" />
+                            <TextBlock Grid.Row="4" Text="Modified" Style="{StaticResource InspectorLabel}" />
+                            <TextBlock x:Name="ModifiedValue" Grid.Row="4" Grid.Column="1" Style="{StaticResource InspectorValue}" />
+                            <TextBlock Grid.Row="5" Text="Width" Style="{StaticResource InspectorLabel}" />
+                            <TextBlock x:Name="WidthValue" Grid.Row="5" Grid.Column="1" Style="{StaticResource InspectorValue}" />
+                            <TextBlock Grid.Row="6" Text="Height" Style="{StaticResource InspectorLabel}" />
+                            <TextBlock x:Name="HeightValue" Grid.Row="6" Grid.Column="1" Style="{StaticResource InspectorValue}" />
+                            <TextBlock Grid.Row="7" Text="Len (bytes)" Style="{StaticResource InspectorLabel}" />
+                            <TextBlock x:Name="LenValue" Grid.Row="7" Grid.Column="1" Style="{StaticResource InspectorValue}" />
+                        </Grid>
+
+                        <Separator Background="{StaticResource BorderBrush}" Margin="0,14" />
+                        <TextBlock Text="Catalog" Style="{StaticResource SectionTitle}" />
+                        <TextBlock x:Name="RatingValue" Text="☆☆☆☆☆" Foreground="#F4B942" FontSize="22" Margin="0,2,0,8" />
+                        <CheckBox x:Name="InvalidCheckBox" Content="Invalid" IsHitTestVisible="False" />
+                        <CheckBox x:Name="DeleteCheckBox" Content="Marked for deletion" Click="DeleteCheckBox_Click" />
+                        <Button Content="Mark All Invalid for Deletion" Margin="0,12,0,4"
+                                Click="MarkAllInvalid_Click" />
+                        <Button Content="Delete Marked" Margin="0,0,0,8"
+                                Click="DeleteMarked_Click" />
+                        <TextBlock Text="Comments" Style="{StaticResource SectionTitle}" Margin="0,14,0,6" />
+                        <TextBox x:Name="CommentTextBox" Height="100" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" />
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+
+        <Border Grid.Row="3" Background="#20212A" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="10,4">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="StatusTextBlock" Grid.Column="0" Foreground="{StaticResource MutedBrush}" Text="Ready"
+                           VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Speed (seconds)" VerticalAlignment="Center" Margin="8,0"
+                               Foreground="{StaticResource MutedBrush}" />
+                    <Button Content="−" Width="28" Padding="0" Click="DecreaseSpeed_Click" ToolTip="Slower (add 0.1 seconds)" />
+                    <TextBox x:Name="SpeedTextBox" Width="54" Text="2.0" TextAlignment="Center"
+                             VerticalContentAlignment="Center" ToolTip="Enter 0.1 to 5.0 seconds"
+                             KeyDown="SpeedTextBox_KeyDown" LostKeyboardFocus="SpeedTextBox_LostKeyboardFocus" />
+                    <Button Content="+" Width="28" Padding="0" Click="IncreaseSpeed_Click" ToolTip="Faster (subtract 0.1 seconds)" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
