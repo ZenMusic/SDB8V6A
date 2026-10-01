@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -18,7 +18,7 @@ namespace SymbolDB
         // TextBox to display found search list
         private TextBox? tbFoundSeachList2b;
         GlobalVars gv;
-        Main? main = null;
+        IApplicationShell? main = null;
         DialogTraverser _parentTraverser;
         public bool bThisIsSubWindow = true;
         FileFunctions ff;
@@ -33,7 +33,7 @@ namespace SymbolDB
         private ActionTraversal action = ActionTraversal.NONE;
         public string? fullpath;
 
-        public SearchForMediaByName(GlobalVars g, Main? mainParent, DialogTraverser parentTrav, FileFunctions f, string? searchFolder = null)
+        public SearchForMediaByName(GlobalVars g, IApplicationShell? mainParent, DialogTraverser parentTrav, FileFunctions f, string? searchFolder = null)
         {
             gv = g;
             main = mainParent;
@@ -1211,15 +1211,7 @@ namespace SymbolDB
 
         private void SafeUpdateMainWindow(FileInfoItem fileInfo, string directoryPath)
         {
-            if (gv.mainWindow?.InvokeRequired == true)
-            {
-                gv.mainWindow.Invoke(new Action(() =>
-                    gv.mainWindow.setTitle(fileInfo, directoryPath)));
-            }
-            else
-            {
-                gv.mainWindow?.setTitle(fileInfo, directoryPath);
-            }
+            gv.mainWindow.SetShellTitle(fileInfo, directoryPath);
         }
 
         public void ApplyScanResults(List<TraverserBG5.FileResult> results, bool isSubWindow)

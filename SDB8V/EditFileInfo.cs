@@ -10,7 +10,7 @@ namespace SymbolDB
     {
         public FileInfoItem _fileInfoItem;
         public DialogTraverser parentForm;
-        public Main mainForm;
+        public IApplicationShell mainForm;
         // Constructors
         public EditFileInfo()
         {
@@ -27,7 +27,7 @@ namespace SymbolDB
                 PopulateFields(fi);
             }
         }
-        public EditFileInfo(FileInfoItem fi, Main parent)
+        public EditFileInfo(FileInfoItem fi, IApplicationShell parent)
         {
             mainForm = parent;
             InitializeComponent();

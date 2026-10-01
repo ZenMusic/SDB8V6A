@@ -15,7 +15,7 @@ namespace SymbolDB
     {
         GlobalVars gv;
         Display1 disp;
-        Main dispMain;
+        IApplicationShell dispMain;
         // Create a new FileSystemWatcher and set its properties.
         FileSystemWatcher watcher = new FileSystemWatcher();
 
@@ -52,7 +52,7 @@ namespace SymbolDB
             try
             {
                 if (disp == null)
-                    dispMain.displayThisImage1(spath);
+                    dispMain.DisplayImage(spath);
                 else
                     disp.displayThisImage1(spath);
             }
@@ -213,14 +213,14 @@ namespace SymbolDB
                                 loadedBmp.Dispose();
                             }
                         }
-                        else if (dispMain != null && !dispMain.IsDisposed)
+                        else if (dispMain != null)
                         {
                             try
                             {
-                                if (dispMain.InvokeRequired)
-                                    dispMain.BeginInvoke(new Action(() => dispMain.displayThisImage(loadedBmp)));
-                                else
-                                    dispMain.displayThisImage(loadedBmp);
+                                string temporaryPath = Path.Combine(Path.GetTempPath(), $"SymbolDB-{Guid.NewGuid():N}.png");
+                                loadedBmp.Save(temporaryPath);
+                                dispMain.DisplayImage(temporaryPath);
+                                loadedBmp.Dispose();
                             }
                             catch (Exception ex)
                             {

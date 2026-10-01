@@ -250,11 +250,11 @@
                 <TextBlock x:Name="StatusTextBlock" Grid.Column="0" Foreground="{StaticResource MutedBrush}" Text="Ready"
                            VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="Speed (seconds)" VerticalAlignment="Center" Margin="8,0"
+                    <TextBlock Text="Speed (seconds; 0 = fastest)" VerticalAlignment="Center" Margin="8,0"
                                Foreground="{StaticResource MutedBrush}" />
                     <Button Content="−" Width="28" Padding="0" Click="DecreaseSpeed_Click" ToolTip="Slower (add 0.1 seconds)" />
                     <TextBox x:Name="SpeedTextBox" Width="54" Text="2.0" TextAlignment="Center"
-                             VerticalContentAlignment="Center" ToolTip="Enter 0.1 to 5.0 seconds"
+                             VerticalContentAlignment="Center" ToolTip="Enter 0 to 5.0 seconds; 0 uses the fastest timer interval"
                              KeyDown="SpeedTextBox_KeyDown" LostKeyboardFocus="SpeedTextBox_LostKeyboardFocus" />
                     <Button Content="+" Width="28" Padding="0" Click="IncreaseSpeed_Click" ToolTip="Faster (subtract 0.1 seconds)" />
                 </StackPanel>

@@ -1,4 +1,4 @@
-﻿#nullable disable
+#nullable disable
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -143,7 +143,7 @@ namespace SymbolDB
             // 1) Right‐click still shows context menu/etc.
             if (e.Button == MouseButtons.Right)
             {
-                gv.mainWindow.stopSlideShow();
+                gv.slideShowMain.stopSlideShow();
                 gv.debug.w("----pointer position", e.X.ToString(), e.Y.ToString());
 
                 gv.debug.w("screen X Y", this.Location.X.ToString(), this.Location.Y.ToString());
@@ -245,20 +245,10 @@ namespace SymbolDB
         //AI2025 END
         //
 
-        Watcher fileWatcher = null;
-
+        
         public void startWatcher()
         {
-            if (fileWatcher == null)
-            {
-                fileWatcher = new Watcher(gv, null, this);
-            }
-            // 2017 in for the folder monitor
-            Point lpoint = new Point(0, 0);
-            pb1.Location = lpoint;
-            pb1.Height = this.Height;
-            pb1.Width = this.Width;
-            // end of test code 2017
+            
         }
 
         // Returns the SCREEN in gv.screen[] whose DeviceName ends with the given GDI index.
@@ -775,7 +765,7 @@ namespace SymbolDB
             pb1.Update();       // <-- force synchronous repaint NOW
         }
 
-        private void pb1_MouseUp(object sender, MouseEventArgs e)
+        private void pb1_MouseUp(object sender, MouseEventArgs e) // ENDS the rubber-band drag and triggers the capture
         {
             if (!_rbDragging) return;
             _rbDragging = false;
@@ -812,7 +802,7 @@ namespace SymbolDB
             tagInfo[tagCount++] = new ImageInfo(finfo, _rbRect);
 
             infod = new DialogGetInfo(_rbRect, _rbRect, this, finfo, captured);
-            dialogLocation = gv.mainWindow.Location;
+            dialogLocation = Location;
             infod.Location = dialogLocation;
             infod.TopMost = true;
             infod.Visible = true;
@@ -1196,38 +1186,38 @@ namespace SymbolDB
             {
                 gv.debug.w("Left  in Display1");
 
-                gv.mainWindow.stopSlideShow();
-                gv.mainWindow.showPreviousSlide();
+                gv.slideShowMain.stopSlideShow();
+                gv.slideShowMain.showPreviousSlide();
                 return false; //for the active control to see the keypress, return false
             }
             else if (keyData == (Keys.Alt | Keys.PageDown))
             {
-                gv.mainWindow.scanForward(10);
+                gv.slideShowMain.scanForward(10);
                 gv.debug.w("------------------------alt pagedown");
                 return true; 
             }
             else if (keyData == (Keys.Control | Keys.PageDown))
             {
-                gv.mainWindow.scanForward(500);
+                gv.slideShowMain.scanForward(500);
                 gv.debug.w("--------------------------cntl pagedown");
                 return true; 
             }
             else if (keyData == ( Keys.PageDown))
             {
-                gv.mainWindow.scanForward(1000);
+                gv.slideShowMain.scanForward(1000);
                 gv.debug.w("-----------------------pagedown");
                 return true; 
             }
             else if (keyData == Keys.Right)
             {
                 gv.debug.w("showNextSlide2  -----  RIGHT  in Display1");
-                gv.mainWindow.showNextSlide3(gv.nextIdx, 1); //right
+                gv.slideShowMain.showNextSlide3(gv.nextIdx, 1); //right
                 return false; //for the active control to see the keypress, return false
             }
           // else if (keyData == Keys.Down)
           // {
             //    gv.debug.w("DOWN  in Display1");
-              // gv.mainWindow.scanForward(3000);
+              // gv.slideShowMain.scanForward(3000);
               // return true; //for the active control to see the keypress, return false
           // }
            // else if (keyData == Keys.Up)
@@ -1244,7 +1234,7 @@ namespace SymbolDB
             }
             else if (keyData == Keys.Home)
             {
-                gv.mainWindow.Activate();
+                gv.mainWindow.ActivateShell();
             }
             /*else if (keyData == Keys.Back)
             {
@@ -1261,7 +1251,7 @@ namespace SymbolDB
                 if (bCopyMode)
                 {
                     gv.debug.w("bCopyMode key press in Display1", keyData.ToString());
-                    gv.mainWindow.copyOrMoveImage((char)keyData);
+                    gv.slideShowMain.copyOrMoveImage((char)keyData);
                 }
                 
                 return true;
@@ -1299,12 +1289,12 @@ namespace SymbolDB
                // startSoundPlayer.Play();
                 if (key_char >= 'a' && key_char <= 'z') //move image to C:\\aImages\x  folder
                 {
-                    gv.mainWindow.moveImage(key_char);
+                    gv.slideShowMain.moveImage(key_char);
                     return;
                 }
                 if (key_char >= '0' && key_char <= '9')
                 {
-                    gv.mainWindow.moveImage(key_char);
+                    gv.slideShowMain.moveImage(key_char);
                     return;
                 }
                 return;
@@ -1325,7 +1315,7 @@ namespace SymbolDB
                     //gv.mainWindow.message(this.Text);
                     // gv.main2.stopSlideShow();
                     if (rc.success)
-                        gv.mainWindow.showNextNoTimer();
+                        gv.slideShowMain.showNextNoTimer();
                     return;
                 }
             }
@@ -1343,30 +1333,22 @@ namespace SymbolDB
                 case 'n':
                     // startSoundPlayer.Play();
                     //gv.debug.write("right arrow key pressed");
-                    gv.mainWindow.showNextSlideNow();
+                    gv.slideShowMain.showNextSlideNow();
                     break;
                 case 'q':
-                    gv.mainWindow.stopSlideShow();
+                    gv.slideShowMain.stopSlideShow();
                     break;
                 case 's': // START slideShow
                     gv.debug.w("Display1 keypress s");
                     setSlideShow(true);
-                    gv.mainWindow.showNextSlideNow();
+                    gv.slideShowMain.showNextSlideNow();
                     break;
                 case 'b':
-                    gv.mainWindow.showPreviousSlide();
+                    gv.slideShowMain.showPreviousSlide();
                     break;
                 case (char)Keys.Enter:
                     //   MessageBox.Show("ENTER KEY PRESSED");
                     break;
-               // case (char)Keys.Down:
-
-                  //  break;
-
-               // case (char)Keys.Up:
-                    //   Console.WriteLine("Up Arrow Captured");
-                    break;
-
                 case (char)Keys.Tab:
                     //  Console.WriteLine("Tab Key Captured");
                     break;
@@ -1380,15 +1362,15 @@ namespace SymbolDB
                     }
                     else
                     {
-                        gv.mainWindow.stopSlideShow();
+                        gv.slideShowMain.stopSlideShow();
                         //gv.main2.displayThisImage(null);
-                        gv.mainWindow.Focus();
+                        gv.mainWindow.FocusShell();
                         this.Close();
                     }
                     break;
                 case (char) Keys.Right:
                     //gv.debug.write("right arrow key (PRESS) ");
-                    gv.mainWindow.showNextSlideNow();
+                    gv.slideShowMain.showNextSlideNow();
                     break;
                 default:
 
@@ -1399,7 +1381,7 @@ namespace SymbolDB
         public bool setSlideShow(bool bOn)
         {
             //gv.bSlideShow = bOn;
-            return gv.mainWindow.setSlideShowOn(bOn);
+            return gv.slideShowMain.setSlideShowOn(bOn);
             //cbSlideShow.Checked = bOn;
             //return gv.bSlideShow;
         }
@@ -1430,26 +1412,26 @@ namespace SymbolDB
             {
                   //  Keys. ----------------------- DO NOT HANDLE a-z, A-Z !!!
                 case Keys.Escape:
-                    gv.mainWindow.Activate();
+                    gv.mainWindow.ActivateShell();
                     break;
                 case Keys.LaunchMail:
-                    gv.mainWindow.setCopyMode(true);
+                    gv.slideShowMain.setCopyMode(true);
                     break;
                 case Keys.PageDown:
                      gv.debug.write("Display1 >> PAGE DOWN key (up) ");
 
                      if (e.Control)
-                         gv.mainWindow.scanForward(1000);
+                         gv.slideShowMain.scanForward(1000);
 
                      else if (e.Alt)
-                         gv.mainWindow.scanForward(5000);
+                         gv.slideShowMain.scanForward(5000);
                      else
-                        gv.mainWindow.scanForward(1);
+                        gv.slideShowMain.scanForward(1);
                     break;
                 case Keys.PageUp:
                     gv.debug.write("Display1 >> PAGE UP key (up) ");
                     setSlideShow(true);
-                    gv.mainWindow.showNextSlideNow();
+                    gv.slideShowMain.showNextSlideNow();
                    
                     break;
                 case Keys.Add:
@@ -1484,7 +1466,7 @@ namespace SymbolDB
                 case Keys.NumPad8:
                 case Keys.NumPad9:
                     gv.debug.w("NumPad IN DISPLAY1 ");
-                    gv.mainWindow.initTimer((int) keyData);
+                    gv.slideShowMain.initTimer((int) keyData);
                     break;
                 case Keys.Tab:
                     //   Console.WriteLine("Tab Key Captured");
@@ -1502,7 +1484,7 @@ namespace SymbolDB
                     else
                     {
                   //      gv.debug.write("left arrow key (up) ");
-                        gv.mainWindow.showPreviousSlide();
+                        gv.slideShowMain.showPreviousSlide();
                     }
                     break;
 
@@ -1520,11 +1502,12 @@ namespace SymbolDB
 
         private void Display1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            gv.mainWindow.stopSlideShow();
-            if (fileWatcher != null)
-                fileWatcher.OnStop();
-            if (md != null)
-                gv.mainWindow.closingThisDisplay(md.screenNumber);
+            var slideShowMain = gv.slideShowMain;
+            slideShowMain?.stopSlideShow();
+            //if (fileWatcher != null)
+              //  fileWatcher.OnStop();
+            if (md != null && slideShowMain != null)
+                slideShowMain.closingThisDisplay(md.screenNumber);
         }
         public Bitmap ResizeBitmap(Image originalImage, int width, int height)
         {
@@ -1844,105 +1827,7 @@ namespace SymbolDB
         }
 
 
-        private void captureScreenWAS(Rectangle bounds)
-        {
-            if (bounds == null)
-                bounds = Screen.PrimaryScreen.Bounds;
-
-            int colourDepth = Screen.PrimaryScreen.BitsPerPixel;
-
-            PixelFormat format;
-            switch (colourDepth)
-            {
-                case 8:
-                case 16:
-                    format = PixelFormat.Format16bppRgb565;
-                    break;
-
-                case 24:
-                    format = PixelFormat.Format24bppRgb;
-                    break;
-
-                case 32:
-                    format = PixelFormat.Format32bppArgb;
-                    break;
-
-                default:
-                    format = PixelFormat.Format32bppArgb;
-                    break;
-            }
-            try
-            {
-                captured = new Bitmap(bounds.Width, bounds.Height, format);
-            }
-            catch (Exception)
-            {
-
-               // Application.Exit();
-            }
-            Graphics gdi;
-            try
-            {
-                gdi = Graphics.FromImage(captured);
-            }
-            catch (Exception)
-            {
-
-                return;
-            }
-            gv.debug.w("---");
-            Point xyoff = new Point(bounds.X, bounds.Y);
-            Point offby8 = PointToScreen(xyoff);
-            gv.debug.w(xyoff);
-            gv.debug.w(offby8);
-            offsetScreenX = xyoff.X - offby8.X;
-            offsetScreenY = xyoff.Y - offby8.Y;
-            gdi.CopyFromScreen(bounds.Left - offsetScreenX, bounds.Top - offsetScreenY, 0, 0, bounds.Size);
-            //if (false)
-            using (SolidBrush brush = new SolidBrush(Color.Red))
-            {
-                //--- top
-                Rectangle toFill = new Rectangle(0, 0, bounds.Width, lineWidth);
-                Point xy = new Point(bounds.X, bounds.Y);
-                Point offby = PointToScreen(xy);
-                gv.debug.w(xy);
-                gv.debug.w(offby);
-                Point wh = new Point(bounds.Width, bounds.Height);
-                Point offby2 = PointToScreen(wh);
-                gv.debug.w(wh);
-                gv.debug.w(offby2);
-                //bounds.Height = PointToScreen(bounds.Height);
-
-                offsetScreenX = xy.X - offby.X;
-                offsetScreenY = xy.Y - offby.Y;
-
-                gdi.FillRectangle(brush, toFill);
-                //-- left
-                //toFill.X = 0;
-                //toFill.Y = 0;
-                toFill.Width = lineWidth;
-                toFill.Height = bounds.Height;
-                gdi.FillRectangle(brush, toFill);
-                //-- right
-                toFill.X = bounds.Width - lineWidth;
-                toFill.Y = 0;
-                toFill.Width = bounds.Width;
-                toFill.Height = bounds.Height;
-                gdi.FillRectangle(brush, toFill);
-                //-- bottom
-                toFill.X = 0;
-                toFill.Y = bounds.Height - lineWidth;
-                toFill.Width = bounds.Width;
-                toFill.Height = bounds.Height;
-                gdi.FillRectangle(brush, toFill);
-                //
-            }
-
-            if (tagpb1 == null)
-                tagpb1 = new PictureBox();
-           tagpb1.Image = captured;
-            
-        }
+       
 
 
 
@@ -2051,7 +1936,7 @@ namespace SymbolDB
         {
             displayMode = D1function.CATALOG;
             Cursor.Show();
-            gv.mainWindow.stopSlideShow();
+            gv.slideShowMain.stopSlideShow();
             
         }
         //add scrolling
@@ -2418,7 +2303,7 @@ namespace SymbolDB
         public void HaveMouse(bool bHave)
         {
             bHaveMouse = bHave;
-            gv.mainWindow.HaveMouse(bHave);
+            gv.slideShowMain?.HaveMouse(bHave);
         }
         //
         //move relative
@@ -2464,7 +2349,7 @@ namespace SymbolDB
         {
             displayMode = D1function.CATALOG;
             Cursor.Show();
-            gv.mainWindow.stopSlideShow();
+            gv.slideShowMain.stopSlideShow();
             this.Text = "Catalog mode .. ";
             setFullScreenMode(false);
 
@@ -2513,7 +2398,7 @@ namespace SymbolDB
             {
                 displayMode = D1function.ANNOTATE;
                 HaveMouse(false);
-                gv.mainWindow.stopSlideShow();
+                gv.slideShowMain.stopSlideShow();
                 tagCount = 0;
                 miAnnotation.Checked = true;
             }
@@ -2527,7 +2412,7 @@ namespace SymbolDB
         private void miSlideShowMode_Click(object sender, EventArgs e)
         {
             displayMode = D1function.SLIDESHOW;
-            gv.mainWindow.startSlideShow(-1, true, gv.iShowDirection);
+            gv.slideShowMain.startSlideShow(-1, true, gv.iShowDirection);
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)

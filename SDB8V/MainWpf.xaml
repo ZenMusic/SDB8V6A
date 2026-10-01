@@ -1,0 +1,231 @@
+<Window x:Class="SymbolDB.MainWpf"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="SymbolDB"
+        Width="860"
+        Height="650"
+        MinWidth="760"
+        MinHeight="800"
+        WindowStartupLocation="CenterScreen"
+        Background="#171820"
+        Foreground="#E8E8EC">
+    <Window.Resources>
+        <SolidColorBrush x:Key="PanelBrush" Color="#23242D" />
+        <SolidColorBrush x:Key="BorderBrush" Color="#3A3D49" />
+
+        <Style TargetType="Button">
+            <Setter Property="Foreground" Value="#ECECF1" />
+            <Setter Property="Background" Value="#343642" />
+            <Setter Property="BorderBrush" Value="#4A4D5A" />
+            <Setter Property="MinHeight" Value="34" />
+            <Setter Property="Padding" Value="14,5" />
+            <Setter Property="Margin" Value="4" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Foreground" Value="#F1F1F4" />
+            <Setter Property="Background" Value="#30323C" />
+            <Setter Property="BorderBrush" Value="#494C59" />
+            <Setter Property="CaretBrush" Value="White" />
+            <Setter Property="Padding" Value="8,5" />
+        </Style>
+
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="#E8E8EC" />
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style TargetType="GroupBox">
+            <Setter Property="Foreground" Value="#E8E8EC" />
+            <Setter Property="Background" Value="{StaticResource PanelBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="Margin" Value="8" />
+            <Setter Property="Padding" Value="10" />
+            <Setter Property="FontSize" Value="15" />
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBox x:Name="InstructionsTextBox"
+                 Grid.Row="0"
+                 Margin="8,4"
+                 MinHeight="72"
+                 AcceptsReturn="True"
+                 TextWrapping="Wrap"
+                 VerticalScrollBarVisibility="Auto"
+                 FontSize="14" />
+
+        <GroupBox Grid.Row="1" Header="Select Display(s)">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <CheckBox x:Name="DisplayIndexCheckBox" Content="D Idx" />
+                    <CheckBox x:Name="ShowDisplayNamesCheckBox"
+                              Content="Show Display Names"
+                              ToolTip="Show an identification window with information on each monitor"
+                              Checked="ShowDisplayNamesCheckBox_Changed"
+                              Unchecked="ShowDisplayNamesCheckBox_Changed" />
+                </StackPanel>
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                    <Button x:Name="SizeWindowButton" Content="size" Click="SizeWindowButton_Click" />
+                    <Button Content="1080" Click="Resize1080Button_Click" />
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+
+        <Button Grid.Row="2"
+                Width="170"
+                Height="48"
+                Margin="4,12,4,4"
+                HorizontalAlignment="Center"
+                Content="Traverse Folder"
+                Background="#315A80"
+                Click="TraverseFolderButton_Click" />
+
+       <GroupBox Grid.Row="3" Header="Folder and Catalog">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <CheckBox x:Name="CatalogImagesCheckBox"
+                  Grid.Row="0"
+                  Grid.Column="0"
+                  Content="Catalog to &gt;&gt;"
+                  Checked="CatalogImagesCheckBox_Changed"
+                  Unchecked="CatalogImagesCheckBox_Changed" />
+        <TextBox x:Name="TargetFolderTextBox"
+                 Grid.Row="0"
+                 Grid.Column="1"
+                 Margin="8,4"
+                 MinHeight="30"
+                 FontSize="14"
+                 VerticalContentAlignment="Center"
+                 TextChanged="TargetFolderTextBox_TextChanged" />
+        <Button Grid.Row="0"
+                Grid.Column="2"
+                Content="Set Target Folder"
+                Background="#315A50"
+                Click="SetTargetFolderButton_Click" />
+
+        <TextBlock Grid.Row="1"
+                   Grid.Column="0"
+                   Margin="5"
+                   VerticalAlignment="Center"
+                   Text="Valid" />
+        <TextBox x:Name="TargetFolderStatus"
+                 Grid.Row="1"
+                 Grid.Column="1"
+                 Margin="8,4"
+                 MinHeight="30"
+                 IsReadOnly="True"
+                 VerticalContentAlignment="Center" />
+      <Button Grid.Row="1"
+        Grid.Column="2"
+        Content="Validate folder"
+        Click="ValidateFolderButton_Click" />
+    </Grid>
+</GroupBox>
+
+        <GroupBox Grid.Row="4" Header="Database">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Margin="4,7"
+                           VerticalAlignment="Center" Text="Database path" />
+                <TextBox x:Name="DatabasePathTextBox"
+                         Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
+                         Margin="8,4" IsReadOnly="True" FontSize="14" />
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Margin="4,7"
+                           VerticalAlignment="Center" Text="Schema" />
+                <TextBox x:Name="DatabaseSchemaTextBox"
+                         Grid.Row="1" Grid.Column="1"
+                         Margin="8,4" IsReadOnly="True" FontSize="14" />
+                <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal">
+                    <Button Content="Refresh" Click="RefreshDatabaseStatusButton_Click" />
+                    <Button Content="Database" Background="#315A50"
+                            Click="OpenDatabaseButton_Click" />
+                </StackPanel>
+
+                <TextBlock x:Name="DatabaseConnectionTextBlock"
+                           Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
+                           Margin="8,5" FontWeight="SemiBold" />
+            </Grid>
+        </GroupBox>
+
+        <TextBlock x:Name="StatusTextBlock"
+                   Grid.Row="5"
+                   Margin="14,8"
+                   Foreground="#A5A7B2"
+                   FontSize="14"
+                   TextWrapping="Wrap" />
+
+        <Border Grid.Row="6"
+                Background="{StaticResource PanelBrush}"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="1"
+                Padding="8"
+                CornerRadius="3">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock x:Name="VersionTextBlock"
+                           Grid.Column="0"
+                           Margin="8,0,18,0"
+                           MinWidth="90"
+                           VerticalAlignment="Center"
+                           TextAlignment="Center"
+                           FontSize="14" />
+                <Button Grid.Column="2" Content="Save2File" Click="SaveToFileButton_Click" />
+                <Button Grid.Column="3" Content="Pgm Parameters"
+                        Click="ProgramParametersButton_Click" />
+                <Button Grid.Column="4" Content="NOTES" Click="NotesButton_Click" />
+                <Button Grid.Column="5" Content="EXIT" Click="ExitButton_Click" />
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

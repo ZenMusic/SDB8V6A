@@ -1,4 +1,4 @@
-﻿//backup v2 restored to main
+//backup v2 restored to main
 #nullable disable
 using LibVLCSharp.Shared;
 using Microsoft.Data.Sqlite;
@@ -44,7 +44,7 @@ using Path = System.IO.Path;
 namespace SymbolDB
 {
 
-    public partial class Main : Form
+    public partial class Main : Form, IApplicationShell
     {
         private readonly FileInfoRepository _repo = new FileInfoRepository();
 
@@ -664,7 +664,18 @@ namespace SymbolDB
             //player = new System.Media.SoundPlayer(soundFiles[30]);
         }
 
-
+        public void DisplayImage(string imagePath)
+        {
+            // Minimal stub to satisfy the interface. Replace with real display logic.
+            try
+            {
+                _globals?.debug.w($"DisplayImage called: {imagePath}");
+            }
+            catch
+            {
+                // swallow to avoid throwing during build/runtime until real logic is added
+            }
+        }
 
         private void btImageErrors_Click(object sender, EventArgs e)
         {
@@ -4300,7 +4311,7 @@ namespace SymbolDB
 
         private void button1_Click_2(object sender, EventArgs e)
         {
-            if (browser2 == null)//|| browser2.IsDisposed)
+            if (!browser2)//|| browser2.IsDisposed)
             {
                 //  wb2 = new Browser2(gv);
                 // browser2.goHome();
@@ -4547,7 +4558,7 @@ namespace SymbolDB
             if (cbAutoAdvance.Checked)
             {
                 gv.copyOnly = true;
-                gv.mainWindow.initFastTimer(600);
+                this.initFastTimer(600);
                 SlideShow_Click_1(null, null);
             }
             else
@@ -4927,7 +4938,7 @@ namespace SymbolDB
                 //  if (display1.IsAccessible)
                 // display1.Focus();
             }
-            gv.mainWindow.showNextSlideNow();
+            this.showNextSlideNow();
 
         }
         private void closeButton_Click_1(object sender, EventArgs e)
@@ -5015,7 +5026,7 @@ namespace SymbolDB
                 stopSlideShow();
                 gv.debug.w("mainWindow  Key   Left");
                 ////if (!screen1)
-                //   gv.mainWindow.showPreviousSlide();
+                //   this.showPreviousSlide();
                 showPreviousSlide();
                 return true; //for the active control to see the keypress, return false
             }
@@ -5064,13 +5075,13 @@ namespace SymbolDB
             }
             else if (keyData == (Keys.Alt | Keys.PageDown))
             {
-                gv.mainWindow.scanForward(10);
+                this.scanForward(10);
                 gv.debug.w("------------------------alt pagedown");
                 return true;
             }
             else if (keyData == (Keys.Control | Keys.PageDown))
             {
-                gv.mainWindow.scanForward(500);
+                this.scanForward(500);
                 gv.debug.w("--------------------------cntl pagedown");
                 return true;
             }
@@ -6525,12 +6536,7 @@ namespace SymbolDB
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            XML_Editor x = new XML_Editor(gv);
-            x.Activate();
-            x.Show();
-        }
+        
 
         private void cbMove_CheckedChanged(object sender, EventArgs e)
         {
@@ -9748,6 +9754,15 @@ namespace SymbolDB
         private void cbDisplayOnThisDisplay_CheckedChanged(object sender, EventArgs e)
         {
 
+        }
+        private void button2_Click(object sender, EventArgs e)
+        {
+        }
+        private void btTarot_Click(object sender, EventArgs e)
+        {
+            XML_Editor x = new XML_Editor(gv);
+            x.Activate();
+            x.Show();
         }
     }
 }

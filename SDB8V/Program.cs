@@ -29,10 +29,13 @@ namespace SymbolDB
             };
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             // Ensure the SQLite database exists, is configured (WAL, foreign_keys), and schema applied.
-            SqliteDb.Initialize();
+            DatabaseStatus databaseStatus = SqliteDb.Initialize();
             //MessageBox.Show(SqliteDb.ConnectionString, "DB in use");
 
-            Application.Run(new Main());
+            MainWpf mainWindow = MainWpf.ShowFromWinForms(databaseStatus);
+
+            Application.Run();
+            GC.KeepAlive(mainWindow);
         }
     }
 }

@@ -22,8 +22,24 @@ namespace SymbolDB
             parmValue = v;
         }
     }
-
     public class ARGS
+    {
+        public string dirpath;
+        public string searchExtensionCategory;
+        public string[] extensions;
+
+        // True searches the selected folder and all subfolders.
+        // False searches only files directly in the selected folder.
+        public bool bTraverseSubdirectories = true;
+
+        public bool bPictures;
+        public bool bMovies;
+        public bool bWEBM;
+        public bool bMIDI;
+        public bool bALL;
+        public bool bHTML;
+    }
+    public class ARGSxxxx
     {
         public string dirpath;
         public string searchExtensionCategory; // e.g., "videos", "images", etc.
@@ -263,7 +279,8 @@ namespace SymbolDB
         public int IDX_LASTDIR2 = SIcolNum++; //4
         public int IDX_LASTDIR3 = SIcolNum++; //5
 
-        public Main mainWindow;
+        public IApplicationShell mainWindow;
+        public IApplicationShell ApplicationShell { get; private set; }
         public SlideShowWpf slideShowMain;
         public bool bLoadFromStreamPreview = true;
         public bool bAutoPlayMovies = false;
@@ -352,9 +369,15 @@ namespace SymbolDB
 
         //----------- DATABASE ---------------------------- DB --
         public string searchExtensionCategoryInUse;
-        public GlobalVars(Main mwin)
+        public GlobalVars(IApplicationShell applicationShell)
         {
-            this.mainWindow = mwin;
+            ApplicationShell = applicationShell ?? throw new ArgumentNullException(nameof(applicationShell));
+            mainWindow = applicationShell;
+            InitializeSharedState();
+        }
+
+        private void InitializeSharedState()
+        {
             debug = new DebugWindow(this);
             // debug.Visible = true;
             // debug.Show();

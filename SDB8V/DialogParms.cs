@@ -1,4 +1,4 @@
-﻿#nullable disable
+#nullable disable
 
 using System;
 using System.Collections.Generic;
@@ -48,7 +48,7 @@ namespace SymbolDB
             this.Refresh();
             this.Show();
             CompleteInitialization();
-            gv.mainWindow.HideLoadingParms();
+            gv.mainWindow.HideLoadingParameters();
             this.Activate();
             if (gv.useTestSourceAndTargetFolder) // Don't save parms if using test folders to avoid overwriting real settings
             {
@@ -374,7 +374,7 @@ namespace SymbolDB
         private void btCreateInitFile_Click(object sender, EventArgs e)
         {
             gv.debug.w("create ini file");
-            int rc = gv.mainWindow.createDefaultInitParm1File(); //ff.createInit1File(null, 
+            int rc = gv.mainWindow.CreateDefaultInitParameterFile(); //ff.createInit1File(null, 
             gv.debug.w("rc = " + rc.ToString());
         }
 
@@ -490,7 +490,7 @@ namespace SymbolDB
 
         private void btDisplayGVars_Click(object sender, EventArgs e)
         {
-            gv.mainWindow.assignInit1ParmsFromGlobals();
+            gv.mainWindow.AssignInitParametersFromGlobals();
             if (gv.initParm1List.Count > 0)
                 resetDGVParms();
         }
@@ -849,7 +849,7 @@ namespace SymbolDB
                     cbtarget2.Checked = false;
                     gv.initParm1List[0].SetTargetDir1(tbTargetFolder1.Text);
                     gv.initParm1List[0].targetDir2 = tbTargetFolder2.Text;
-                    gv.mainWindow.setTargetFolder(tbTargetFolder1.Text);
+                    gv.mainWindow.SetTargetFolder(tbTargetFolder1.Text);
                 }
             }
         }
@@ -873,7 +873,7 @@ namespace SymbolDB
                     cbtarget2.Checked = false;
                     gv.initParm1List[0].SetTargetDir1(tbTargetFolder1.Text);
                     gv.initParm1List[0].targetDir3 = tbTargetFolder3.Text;
-                    gv.mainWindow.setTargetFolder(tbTargetFolder1.Text);
+                    gv.mainWindow.SetTargetFolder(tbTargetFolder1.Text);
                 }
                 else if (cbtarget3.Checked)
                 {
@@ -884,7 +884,7 @@ namespace SymbolDB
                     cbtarget3.Checked = false;
                     gv.initParm1List[0].SetTargetDir1(tbTargetFolder1.Text);
                     gv.initParm1List[0].targetDir3 = tbTargetFolder3.Text;
-                    gv.mainWindow.setTargetFolder(tbTargetFolder1.Text);
+                    gv.mainWindow.SetTargetFolder(tbTargetFolder1.Text);
                 }
             }
             else if (cbtarget2.Checked)
@@ -898,7 +898,7 @@ namespace SymbolDB
                     cbtarget3.Checked = false;
                     gv.initParm1List[0].SetTargetDir1(tbTargetFolder2.Text);
                     gv.initParm1List[0].targetDir3 = tbTargetFolder3.Text;
-                    gv.mainWindow.setTargetFolder(tbTargetFolder2.Text);
+                    gv.mainWindow.SetTargetFolder(tbTargetFolder2.Text);
                 }
             }
         }
@@ -942,19 +942,19 @@ namespace SymbolDB
         private void btSetTarget1_Click(object sender, EventArgs e)
         {
             gv.initParm1List[0].SetTargetDir1(tbTargetFolder1.Text);
-            gv.mainWindow.setTargetFolder(tbTargetFolder1.Text);
+            gv.mainWindow.SetTargetFolder(tbTargetFolder1.Text);
         }
 
         private void btSetTarget2_Click(object sender, EventArgs e)
         {
             gv.initParm1List[0].targetDir2 = tbTargetFolder2.Text;
-            gv.mainWindow.setTargetFolder(tbTargetFolder2.Text);
+            gv.mainWindow.SetTargetFolder(tbTargetFolder2.Text);
         }
 
         private void btSetTarget3_Click_1(object sender, EventArgs e)
         {
             gv.initParm1List[0].targetDir3 = tbTargetFolder3.Text;
-            gv.mainWindow.setTargetFolder(tbTargetFolder3.Text);
+            gv.mainWindow.SetTargetFolder(tbTargetFolder3.Text);
         }
 
         private void btSetWatch1_Click(object sender, EventArgs e)

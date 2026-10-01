@@ -1,4 +1,4 @@
-﻿#nullable disable
+#nullable disable
 
 using System;
 using System.Collections.Generic;
@@ -29,7 +29,7 @@ namespace SymbolDB
             this.Refresh();
             this.Show();
             CompleteInitialization();
-            gv.mainWindow.HideLoadingParms();
+            gv.mainWindow.HideLoadingParameters();
             this.Activate();
 
             if (gv.useTestSourceAndTargetFolder)
@@ -139,7 +139,7 @@ namespace SymbolDB
         private void btCreateInitFile_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Debug.WriteLine("create ini file");
-            int rc = gv.mainWindow.createDefaultInitParm1File();
+            int rc = gv.mainWindow.CreateDefaultInitParameterFile();
             System.Diagnostics.Debug.WriteLine("rc = " + rc.ToString());
         }
 

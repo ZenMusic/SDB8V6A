@@ -39,7 +39,7 @@ namespace SymbolDB
         /// <summary>
         /// Must be called once at startup.
         /// </summary>
-        public static void Initialize()
+        public static DatabaseStatus Initialize()
         {
             var isNew = !File.Exists(DbPath);
 
@@ -81,6 +81,8 @@ namespace SymbolDB
                 // Optional: seed data
                 // Insert whatever you want here on first run.
             }
+
+            return CreateStatus(conn);
         }
         public static string NormalizePathKey(string? path)
         {
@@ -245,6 +247,40 @@ namespace SymbolDB
             var current = GetSchemaVersion(conn);
             var target = Migrations.Count;
             return (current, target);
+        }
+
+        /// <summary>
+        /// Reads current database health and schema information without depending on a UI window.
+        /// </summary>
+        public static DatabaseStatus GetStatus()
+        {
+            try
+            {
+                using var conn = OpenConnection();
+                return CreateStatus(conn);
+            }
+            catch (Exception ex)
+            {
+                return new DatabaseStatus(
+                    DbPath,
+                    false,
+                    0,
+                    Migrations.Count,
+                    $"Database connection failed: {ex.Message}");
+            }
+        }
+
+        private static DatabaseStatus CreateStatus(SqliteConnection connection)
+        {
+            int current = GetSchemaVersion(connection);
+            int target = Migrations.Count;
+
+            return new DatabaseStatus(
+                DbPath,
+                true,
+                current,
+                target,
+                "Database connection opened successfully.");
         }
     }
 }

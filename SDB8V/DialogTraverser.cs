@@ -1,4 +1,4 @@
-﻿#nullable disable
+#nullable enable annotations
 //broke
 using LibVLCSharp.Shared;
 using Microsoft.Data.Sqlite;
@@ -82,7 +82,7 @@ namespace SymbolDB  //dmc26
         //Point listViewLoc;
 
 
-        Main? main = null;
+        IApplicationShell? main = null;
         DialogTraverser? parentWin;
         public bool bThisIsSubWindow = false;
 
@@ -97,8 +97,8 @@ namespace SymbolDB  //dmc26
         private bool _metadataUpdatedAfterTraversal = false;
         private string _lastTraversalType = ""; // "images" or "videos"
         private SlideShowWpf _slideShowWpf;
-
-        public DialogTraverser(GlobalVars g, Main mainParent, int imode, FileFunctions f, DialogTraverser parent = null) /////////////////////////////////////////////////////////////////////////
+        private AnnotationsWpf _annotationsWpf;
+        public DialogTraverser(GlobalVars g, IApplicationShell mainParent, int imode, FileFunctions f, DialogTraverser parent = null) /////////////////////////////////////////////////////////////////////////
         {
             gv = g;
             InitializeComponent();
@@ -1074,7 +1074,7 @@ namespace SymbolDB  //dmc26
                 if (bPlayingEnding)
                     return;
                 if (cbSoundScan.Checked)
-                    gv.mainWindow.soundAlert(49);
+                    gv.mainWindow.PlayAlert(49);
                 if (messageCount > 0 && messageCount < numSampleCount.Value)
                 {
                     //longer segments option
@@ -1180,12 +1180,6 @@ namespace SymbolDB  //dmc26
 
             //fname = fname + ftype;
             fname = fname + ftype;
-            if (false)
-            {
-                gv.debug.w("--->> attempt to MOVE image file >> ", fpathCurrentImage);
-                bcopied = ff.MoveFileRename(fpathCurrentImage, targetDir, fname);
-            }
-            else
             {
                 gv.debug.w("--->> attempt to COPY image file >> ", fpathCurrentImage);
                 bcopied = ff.CopyFileRename(fpathCurrentImage, targetDir, fname); //////////////////////////////////////// COPY or MOVE 
@@ -1878,7 +1872,7 @@ namespace SymbolDB  //dmc26
                     {
                         gv.dialogTraverser2.Close();
                     }
-                main.Activate();
+                main.ActivateShell();
             }
             this.Close();
         }
@@ -2973,9 +2967,9 @@ namespace SymbolDB  //dmc26
             {
                 ////  main.directoryPath(tbDirectoryPath.Text + " " + gv.imageFileList.getIndexed(0));
                 if (bThisIsSubWindow)
-                    gv.mainWindow.setTitle(gv.imageFileList2.getIndexed(0), tbDirectoryPath.Text);
+                    gv.mainWindow.SetShellTitle(gv.imageFileList2.getIndexed(0), tbDirectoryPath.Text);
                 else
-                    gv.mainWindow.setTitle(gv.imageFileList1.getIndexed(0), tbDirectoryPath.Text);
+                    gv.mainWindow.SetShellTitle(gv.imageFileList1.getIndexed(0), tbDirectoryPath.Text);
 
                 action = TraversalActionState.COMPLETED;
 
@@ -3045,6 +3039,7 @@ namespace SymbolDB  //dmc26
             if (_slideShowWpf == null || !_slideShowWpf.IsLoaded)
             {
                 _slideShowWpf = new SlideShowWpf(gv, this);
+                gv.slideShowMain = _slideShowWpf;
                 new System.Windows.Interop.WindowInteropHelper(_slideShowWpf).Owner = Handle;
                 System.Windows.Forms.Integration.ElementHost.EnableModelessKeyboardInterop(_slideShowWpf);
                 _slideShowWpf.Closed += (_, _) => _slideShowWpf = null;
@@ -5392,12 +5387,12 @@ namespace SymbolDB  //dmc26
         }
         public void SoundAlertFocus()
         {
-            gv.mainWindow.soundAlert(40);
+            gv.mainWindow.PlayAlert(40);
 
         }
         public void SoundAlertFocus2()
         {
-            gv.mainWindow.soundAlert(5);
+            gv.mainWindow.PlayAlert(5);
 
         }
         private void btFocus_Click(object sender, EventArgs e)
@@ -5421,7 +5416,7 @@ namespace SymbolDB  //dmc26
             btFocus.BackColor = Color.LightGray;
             btFocus2.BackColor = Color.LightGray;
             bFocusIsHere = false;
-            gv.mainWindow.soundAlert(6);
+            gv.mainWindow.PlayAlert(6);
 
             cbFocusIsOnThisWindow.Checked = bFocusIsHere;
         }
@@ -6979,7 +6974,7 @@ namespace SymbolDB  //dmc26
                 if (vlcPlayer != null && !vlcPlayer.IsDisposed)
                     vlcPlayer.SetFocusOnParent(true);
             bFocusIsHere = false;
-            gv.mainWindow.soundAlert(6);
+            gv.mainWindow.PlayAlert(6);
             cbFocusIsOnThisWindow.Checked = bFocusIsHere;
         }
         private ImageFileList test()
@@ -7416,8 +7411,7 @@ namespace SymbolDB  //dmc26
 
         private void btDisplayMainFullScreen_Click(object sender, EventArgs e)
         {
-            main.Activate();
-            main.WindowState = FormWindowState.Maximized;
+            main.ActivateShell();
         }
 
         private void btResume_Click(object sender, EventArgs e)
@@ -8234,7 +8228,7 @@ namespace SymbolDB  //dmc26
             if (gv.dialogTraverser2 != null && !gv.dialogTraverser2.IsDisposed)
             {
                 tbTargetFolder.Text = gv.dialogTraverser2.GetFolderFullPath();
-                gv.mainWindow.setTargetFolder(tbTargetFolder.Text);
+                gv.mainWindow.SetTargetFolder(tbTargetFolder.Text);
             }
         }
 
@@ -8653,7 +8647,7 @@ namespace SymbolDB  //dmc26
         {
             idx3IsWaiting = true;
             SortByFileLength(sender, e);
-            gv.mainWindow.SetImageList3(imageFileList2); //imageFileList2
+            gv.mainWindow.SetImageList(imageFileList2); //imageFileList2
             if (btSendList3.BackColor == Color.LightGreen)
                 btSendList3.BackColor = Color.LightGray;
             else
@@ -8692,13 +8686,13 @@ namespace SymbolDB  //dmc26
             fullPath = NormalizePath(fullPath);
             if (fullPath.EndsWith("/AAAA") || fullPath.EndsWith("\\AAAA"))
             {
-                main.setTargetFolder(fullPath);
+                main.SetTargetFolder(fullPath);
                 cbSpecialFolder.Checked = true;
                 return true;
             }
             else
             {
-                main.setTargetFolder(fullPath);
+                main.SetTargetFolder(fullPath);
                 cbSpecialFolder.Checked = false;
                 return false;
             }
@@ -8715,7 +8709,7 @@ namespace SymbolDB  //dmc26
                 if (!rc)
                 {
                     folderName = folderName + "/AAAA";
-                    main.setTargetFolder(folderName);
+                    main.SetTargetFolder(folderName);
                 }
             }
             else //else REMOVE specialFolder from TARGET
@@ -8731,7 +8725,7 @@ namespace SymbolDB  //dmc26
                 }
             }
             tbTargetFolder.Text = folderName;
-            main.setTargetFolder(folderName);
+            main.SetTargetFolder(folderName);
             return folderName;
         }
         public void SetSpecialFolder(bool bOn, bool off)  //btSetTarget2Special
@@ -8752,7 +8746,7 @@ namespace SymbolDB  //dmc26
                     {
                         Directory.CreateDirectory(specialDirectory);
                     }
-                    gv.mainWindow.setTargetFolder(specialDirectory);
+                    gv.mainWindow.SetTargetFolder(specialDirectory);
                     btSetTarget2Special.BackColor = Color.LightGreen;
                     btSetTarget2Special.Text = "AAAA";
                     tbTargetFolder.Text = specialDirectory;
@@ -8769,7 +8763,7 @@ namespace SymbolDB  //dmc26
             btSetTargetDirToThis_Click(null, null);
             bUsingSpecialDirectory = false;
             tbTargetFolder.Text = originalTargetDirectory;
-            gv.mainWindow.setTargetFolder(tbTargetFolder.Text);
+            gv.mainWindow.SetTargetFolder(tbTargetFolder.Text);
         }
 
         private void btResetTarget1_Click(object sender, EventArgs e)
@@ -9243,7 +9237,7 @@ namespace SymbolDB  //dmc26
             {
                 try
                 {
-                    gv.mainWindow.soundAlert(1);
+                    gv.mainWindow.PlayAlert(1);
                 }
                 catch { }
             }
@@ -9847,7 +9841,7 @@ namespace SymbolDB  //dmc26
             //CopyUpdatedRatingsToRatingsFile();
             ProcessChangedRows();
 
-            gv.mainWindow.soundAlert(1);
+            gv.mainWindow.PlayAlert(1);
         }
         public void CopyCommentToSourceForAllRows()
         {
@@ -9945,7 +9939,7 @@ namespace SymbolDB  //dmc26
             Refresh();
             var count = ApplyRatingsToDGV1FromDB();
             DBstatus($"Updated {count} rows from DB.");
-            gv.mainWindow.soundAlert(1);
+            gv.mainWindow.PlayAlert(1);
             //
             previousRowIdWas = -1;
             dgv1_SelectionChanged(null, null);
@@ -9959,7 +9953,7 @@ namespace SymbolDB  //dmc26
             int rc = ApplyRatingsToFileList();
             tbCountRatings.Text = rc.ToString();
             SetCommentToz();
-            gv.mainWindow.soundAlert(6);
+            gv.mainWindow.PlayAlert(6);
             previousRowIdWas = -1;
             dgv1_SelectionChanged(null, null);
         }
@@ -10548,7 +10542,7 @@ namespace SymbolDB  //dmc26
             if (cbAutosize.Checked)
             {
                 AutoSizeDGVColumns();
-                gv.mainWindow.soundAlert(5);
+                gv.mainWindow.PlayAlert(5);
             }
             else
             {
@@ -10904,6 +10898,29 @@ namespace SymbolDB  //dmc26
         //
         public ARGS BuildTraversalArgsFromUi()
         {
+            string category = string.IsNullOrWhiteSpace(gv.searchExtensionCategoryInUse)
+                ? "images"
+                : gv.searchExtensionCategoryInUse;
+
+            if (gv.SearchExtensions == null ||
+                !gv.SearchExtensions.TryGetValue(category, out string[] extensions) ||
+                extensions == null ||
+                extensions.Length == 0)
+            {
+                throw new InvalidOperationException(
+                    $"No search extensions are configured for category '{category}'.");
+            }
+
+            return new ARGS
+            {
+                dirpath = tbDirectoryPath.Text.Trim(),
+                bTraverseSubdirectories = cbTraverse.Checked,
+                searchExtensionCategory = category,
+                extensions = extensions
+            };
+        }
+        public ARGS BuildTraversalArgsFromUxxxxxxxxi()
+        {
             // Use gv.searchExtensionsInUse to determine file types
             string searchType = gv.searchExtensionCategoryInUse ?? "images";
 
@@ -10949,15 +10966,16 @@ namespace SymbolDB  //dmc26
 
             return new ARGS
             {
-                dirpath = tbDirectoryPath.Text,
+                dirpath = tbDirectoryPath.Text.Trim(),
+                bTraverseSubdirectories = cbTraverse.Checked,
                 bPictures = pictures,
                 bMovies = movies,
                 bWEBM = webm,
                 bMIDI = midi,
                 bALL = all,
                 bHTML = html,
-                searchExtensionCategory = searchType,  // Category name(dictionary key)
-                extensions = extensions  // Actual extension patterns array
+                searchExtensionCategory = searchType,
+                extensions = extensions
             };
         }
         private static string BuildRootRelativePath(string root, string fullPath)
@@ -11236,5 +11254,31 @@ namespace SymbolDB  //dmc26
         {
             OpenSlideShowWpf();
         }
+
+        private void btAnnotations_Click(object sender, EventArgs e)
+        {
+            if (gv.imageFileList1?.finfoList == null ||
+                gv.imageFileList1.finfoList.Count == 0)
+            {
+                MessageBox.Show(
+                    this,
+                    "Load an image deck before opening annotations.",
+                    "Annotations",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+
+                return;
+            }   
+
+    if (_annotationsWpf == null || !_annotationsWpf.IsLoaded)
+    {
+        _annotationsWpf = AnnotationsWpf.ShowFromWinForms(gv, this);
+        _annotationsWpf.Closed += (_, _) => _annotationsWpf = null;
+    }
+    else
+    {
+        _annotationsWpf.Activate();
+    }
+}
     }
 }

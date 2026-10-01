@@ -49,14 +49,28 @@ namespace SymbolDB
         /// <param name="x">First object to be compared</param>
         /// <param name="y">Second object to be compared</param>
         /// <returns>The result of the comparison. "0" if equal, negative if 'x' is less than 'y' and positive if 'x' is greater than 'y'</returns>
-        public int Compare(object x, object y)
+        public int Compare(object? x, object? y)
         {
-            int compareResult;
-            ListViewItem listviewX, listviewY;
+            if (ReferenceEquals(x, y))
+                return 0;
 
-            // Cast the objects to be compared to ListViewItem objects
-            listviewX = (ListViewItem)x;
-            listviewY = (ListViewItem)y;
+            if (x is null)
+                return -1;
+
+            if (y is null)
+                return 1;
+
+            if (x is not ListViewItem listviewX)
+                throw new System.ArgumentException(
+                    "The value must be a ListViewItem.",
+                    nameof(x));
+
+            if (y is not ListViewItem listviewY)
+                throw new System.ArgumentException(
+                    "The value must be a ListViewItem.",
+                    nameof(y));
+
+            int compareResult;
 
             if (listviewX.ListView.Columns[ColumnToSort].Tag == null)
             {

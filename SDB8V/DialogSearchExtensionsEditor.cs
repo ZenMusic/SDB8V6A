@@ -9,22 +9,7 @@ using System.Xml.Serialization;
 
 namespace SymbolDB
 {
-    // ── Serialization helpers ────────────────────────────────────────────────
-    [XmlRoot("SearchExtensionsData")]
-    public class SearchExtensionsData
-    {
-        [XmlElement("Category")]
-        public List<SearchExtensionCategory> Categories { get; set; } = new();
-    }
-
-    public class SearchExtensionCategory
-    {
-        [XmlAttribute("name")]
-        public string Name { get; set; }
-
-        [XmlElement("Extension")]
-        public List<string> Extensions { get; set; } = new();
-    }
+    
 
     // ── Editor form ──────────────────────────────────────────────────────────
     public partial class DialogSearchExtensionsEditor : Form
@@ -65,6 +50,10 @@ namespace SymbolDB
             {
                 MessageBox.Show($"Could not load search extensions:\n{ex.Message}",
                                 "Load Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                gv.SearchExtensions = CreateDefaultData().Categories.ToDictionary(
+                    category => category.Name,
+                    category => category.Extensions.ToArray(),
+                    StringComparer.OrdinalIgnoreCase);
             }
             return gv.SearchExtensions.Count;
         }
@@ -495,5 +484,21 @@ namespace SymbolDB
             using var dlg = new DialogSearchExtensionsEditor(gv);
             dlg.ShowDialog(owner);
         }
+    }
+    // ── Serialization helpers ────────────────────────────────────────────────
+    [XmlRoot("SearchExtensionsData")]
+    public class SearchExtensionsData
+    {
+        [XmlElement("Category")]
+        public List<SearchExtensionCategory> Categories { get; set; } = new();
+    }
+
+    public class SearchExtensionCategory
+    {
+        [XmlAttribute("name")]
+        public string Name { get; set; }
+
+        [XmlElement("Extension")]
+        public List<string> Extensions { get; set; } = new();
     }
 }

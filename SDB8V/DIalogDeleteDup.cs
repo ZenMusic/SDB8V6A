@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -35,7 +35,7 @@ namespace SymbolDB
             if (counter > SECONDS_TO_CONTINUE)
             {
                 timer.Stop();
-                gv.mainWindow.markForDeletion(true);
+                gv.mainWindow.MarkForDeletion(true);
                 endAndClose();
                 return;
             }
@@ -46,12 +46,12 @@ namespace SymbolDB
             if (counter == -1)
             {
                 DialogResult = DialogResult.Cancel;
-                gv.mainWindow.DelReturnCodeContinue(false);
+                gv.mainWindow.ContinueAfterDelete(false);
             }
             else  //counter > gv.SECONDS_TO_CONTINUE)
             {
                 DialogResult = DialogResult.OK;
-                gv.mainWindow.DelReturnCodeContinue(true);
+                gv.mainWindow.ContinueAfterDelete(true);
             }
         }
         public void Restart()
@@ -63,7 +63,7 @@ namespace SymbolDB
         private void btContinue_Click(object sender, EventArgs e)
         {
             timer.Stop();
-            gv.mainWindow.markForDeletion(true);
+            gv.mainWindow.MarkForDeletion(true);
             endAndClose();
             return;
         }

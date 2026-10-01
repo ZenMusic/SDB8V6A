@@ -69,40 +69,7 @@ namespace SymbolDB
             //
             // so the UI updates once instead of per-row.
         }
-        //   scan results (files + levels) to imageFileList1 or imageFileList2 in one batch,    
-        public void ApplyScanResults1(
-            List<TraverserBG1.FileResult> results,
-            bool useList2)
-        {
-            if (InvokeRequired)
-            {
-                BeginInvoke(new Action<List<TraverserBG1.FileResult>, bool>(
-                    ApplyScanResults1), results, useList2);
-                return;
-            }
-
-            if (results == null || results.Count == 0)
-                return;
-
-            // Fast path: use our bulk add on the ImageFileList wrapper
-            if (useList2)
-            {
-                // false = skip expensive FileInfo length/timestamp reads
-                gv.imageFileList2.AddResultsFast1(results, includeFileMetadata: false);
-            }
-            else
-            {
-                // In DialogTraverser.ApplyScanResults
-                gv.imageFileList1.AddResultsFast1(results, includeFileMetadata: false);
-            }
-
-            // If you’re binding a DataGridView via a BindingSource to finfoList,
-            // this is the place to trigger a single refresh, e.g.:
-            //
-            //   bindingSource1.ResetBindings(false);
-            //
-            // so the UI updates once instead of per-row.
-        }
+        
 
     }
 }

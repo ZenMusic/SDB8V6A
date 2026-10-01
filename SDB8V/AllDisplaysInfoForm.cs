@@ -82,18 +82,42 @@ namespace SymbolDB
         }
 
         private class DisplayNumberSorter : System.Collections.IComparer
-        {
-            public int Compare(object x, object y)
-            {
-                int a = int.TryParse(((ListViewItem)x).Text, out int ia) ? ia : 0;
-                int b = int.TryParse(((ListViewItem)y).Text, out int ib) ? ib : 0;
-                return a.CompareTo(b);
-            }
-        }
+{
+    public int Compare(object? x, object? y)
+    {
+        if (ReferenceEquals(x, y))
+            return 0;
+
+        if (x is null)
+            return -1;
+
+        if (y is null)
+            return 1;
+
+        if (x is not ListViewItem left)
+            throw new ArgumentException(
+                "The value must be a ListViewItem.",
+                nameof(x));
+
+        if (y is not ListViewItem right)
+            throw new ArgumentException(
+                "The value must be a ListViewItem.",
+                nameof(y));
+
+        int leftNumber = int.TryParse(left.Text, out int parsedLeft)
+            ? parsedLeft
+            : 0;
+
+        int rightNumber = int.TryParse(right.Text, out int parsedRight)
+            ? parsedRight
+            : 0;
+
+        return leftNumber.CompareTo(rightNumber);
+    }
+}
 
         private void AllDisplaysInfoForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            gv.mainWindow._allDisplaysInfoForm = null;
         }
     }
 }

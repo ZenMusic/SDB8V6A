@@ -364,65 +364,8 @@ namespace SymbolDB
                 finfoList.Add(item);
             }
         }
-        public void AddResultsFast1(List<TraverserBG1.FileResult> results, bool includeFileMetadata = false)
-        {
-            if (results == null || results.Count == 0)
-                return;
+        
 
-            // Pre-grow the underlying list to avoid repeated reallocations
-            if (finfoList.Capacity < finfoList.Count + results.Count)
-            {
-                finfoList.Capacity = finfoList.Count + results.Count;
-            }
-
-            foreach (var r in results)
-            {
-                var item = new FileInfoItem
-                {
-                    // Basic info derivable from path
-                    fpath = r.Path,
-                    dpath = Path.GetDirectoryName(r.Path),
-                    fname = Path.GetFileName(r.Path),
-                    ext = Path.GetExtension(r.Path),
-                    type = r.Kind,   // "f" or "d"
-                    level = r.Level,
-
-                    // Reasonable defaults for the rest.
-                    // You can tweak these if your logic depends on them.
-                    rating = ' ',
-                    bDelete = false,
-                    bInvalid = false,
-                    width = 0,
-                    height = 0,
-                    source = string.Empty,
-                    playTime = 0,
-                    minutes = 0,
-                    seconds = 0,
-                    ndx = 0,
-                    comment = string.Empty,
-                    stimestamp = string.Empty
-                };
-
-                if (includeFileMetadata)
-                {
-                    try
-                    {
-                        var fi = new FileInfo(r.Path);
-                        item.len = fi.Length;
-
-                        var ts = fi.LastWriteTime;
-                        item.stimestamp = ts.ToString("yyyy-MM-dd HH:mm:ss");
-                        // if you want, you can also store ts in a public property
-                    }
-                    catch
-                    {
-                        // swallow I/O errors here – keep the scan robust
-                    }
-                }
-
-                finfoList.Add(item);
-            }
-        }
 
         //
 

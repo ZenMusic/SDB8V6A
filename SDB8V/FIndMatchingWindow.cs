@@ -1,4 +1,4 @@
-﻿#nullable disable
+#nullable disable
 using System;
 using System.Collections.Generic;
 using System.DirectoryServices;
@@ -18,7 +18,8 @@ namespace SymbolDB
     public partial class FindMatchingWindow : Form
     {
         // ── reference back to Main ──────────────────────────────────────────
-        private readonly Main _main;
+        private readonly IApplicationShell _shell;
+        private readonly FileInfoRepository _repo = new FileInfoRepository();
 
         // ── fields (previously in Main) ─────────────────────────────────────
         private CancellationTokenSource _cts;
@@ -29,9 +30,9 @@ namespace SymbolDB
 
         // ── ctor ─────────────────────────────────────────────────────────────
         GlobalVars gv;
-        public FindMatchingWindow(Main main, GlobalVars g)
+        public FindMatchingWindow(IApplicationShell shell, GlobalVars g)
         {
-            _main = main ?? throw new ArgumentNullException(nameof(main));
+            _shell = shell ?? throw new ArgumentNullException(nameof(shell));
             gv = g ?? throw new ArgumentNullException(nameof(g));
 
             InitializeComponent();
@@ -43,8 +44,8 @@ namespace SymbolDB
                 Hide();
             };
 
-            pbMatch.Image = _main.CurrentMainImage; // may be null — RefreshSourceImage handles it
-            if (_main.CurrentMainImage == null)
+            pbMatch.Image = CurrentImage; // may be null — RefreshSourceImage handles it
+            if (CurrentImage == null)
             {
                 MessageBox.Show("No source image is currently loaded. Please load an image first.", "No Source Image", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -53,9 +54,22 @@ namespace SymbolDB
             this.Refresh();
         }
         
+        private FileInfoItem CurrentFileInfo => gv.imageFileList1?.finfoList != null && gv.nextIdx >= 0 && gv.nextIdx < gv.imageFileList1.finfoList.Count ? gv.imageFileList1.finfoList[gv.nextIdx] : null;
+
+        private Image CurrentImage
+        {
+            get
+            {
+                string path = CurrentFileInfo?.fpath;
+                if (string.IsNullOrWhiteSpace(path) || !File.Exists(path)) return null;
+                using Image source = Image.FromFile(path);
+                return new Bitmap(source);
+            }
+        }
+
         public void RefreshSourceImage()
         {
-            var img = _main.CurrentMainImage;
+            var img = CurrentImage;
             if (img != null)
                 pbMatch.Image = img;
         }
@@ -77,7 +91,7 @@ namespace SymbolDB
 
         private async void btFindMatchingImage_Click(object sender, EventArgs e)
         {
-            var mainImage = _main.CurrentMainImage;
+            var mainImage = CurrentImage;
             if (mainImage == null)
             {
                 MessageBox.Show("Please load a source image first.");
@@ -87,7 +101,7 @@ namespace SymbolDB
             cbSwapNewList.Enabled = true;
             cbSwapNewList.Checked = false;
             tbSearchResult.Focus();
-            try { _main.HideFileInfoPanel(); } catch { }
+            
 
             // Show source image in the preview box
            // pbMatch.Image = mainImage;
@@ -119,7 +133,7 @@ namespace SymbolDB
             tbSearchResult.Text = "Searching…";
 
             // Show the full path of the source image being searched
-            tbFileName.Text = _main.finfo1?.fpath ?? string.Empty;
+            tbFileName.Text = CurrentFileInfo?.fpath ?? string.Empty;
 
             // Progress updates marshalled back to UI thread
             _matcher.ProgressCallback = (processed, found) =>
@@ -138,7 +152,7 @@ namespace SymbolDB
                     _matcher.FindMatches(
                         mainImage: new Bitmap(mainImage),
                         rootDirectory: searchFolder,
-                        sourceImagePath: _main.finfo1?.fpath ?? string.Empty,
+                        sourceImagePath: CurrentFileInfo?.fpath ?? string.Empty,
                         threshold: _matchThreshold,
                         cancellationToken: _cts.Token
                     ), _cts.Token);
@@ -155,7 +169,7 @@ namespace SymbolDB
             string sourceNormalized = string.Empty;
             try
             {
-                sourceNormalized = Path.GetFullPath(_main.finfo1?.fpath ?? string.Empty)
+                sourceNormalized = Path.GetFullPath(CurrentFileInfo?.fpath ?? string.Empty)
                     .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
             }
             catch { }
@@ -207,7 +221,7 @@ namespace SymbolDB
             }
             catch (Exception ex)
             {
-                _main.StopAll();
+                gv.bStopAll = true;
                 MessageBox.Show($"Unable to load image:\n{ex.Message}",
                     "Load Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -228,7 +242,7 @@ namespace SymbolDB
                 MessageBoxIcon.Warning);
 
             if (result != DialogResult.Yes) return;
-            _main.ClearAllPictureBoxesInUse();
+            
 
             _matcher.DeleteMatches(_matches);
 
@@ -239,12 +253,12 @@ namespace SymbolDB
 
             // Save count text, navigate, restore
             string slideNumber = gv.slideCount1.ToString("N0");
-            _main.showNextSlideImageFileList1(0, 1);
+            gv.slideShowMain?.showNextSlideImageFileList1(0, 1);
             tbSearchResult.Text = "deleted";
             _matches.Clear();
             lbMatches.Items.Clear();
             btDeleteMatchingImages.Enabled = false;
-            _main.SetGoToSlideText(slideNumber);
+            if (int.TryParse(slideNumber, out int slideIndex)) gv.slideShowMain?.SetNextSlideNumber(slideIndex);
             gv.slideCount1 = gv.imageFileList1.getImageCount();
         }
 
@@ -312,9 +326,9 @@ namespace SymbolDB
                         catch { gv.slideCount1 = gv.imageFileList1.finfoList?.Count ?? 0; }
                     }
 
-                    _main.SetImageCountText(gv.slideCount1.ToString("N0"));
-                    _main.SetGoToSlideText("0");
-                    _main.DoGoToSlideNumber();
+                    
+                    
+                    gv.slideShowMain?.SetNextSlideNumber(0);
                     gv.debug.w($"Swap ON: swapped {matchCount} matches into main list.");
                 }
                 catch (Exception ex)
@@ -339,9 +353,9 @@ namespace SymbolDB
                         catch { gv.slideCount1 = gv.imageFileList1.finfoList?.Count ?? 0; }
                     }
 
-                    _main.SetImageCountText(gv.slideCount1.ToString("N0"));
-                    _main.SetGoToSlideText("0");
-                    _main.DoGoToSlideNumber();
+                    
+                    
+                    gv.slideShowMain?.SetNextSlideNumber(0);
                     gv.debug.w("Swap OFF: restored original list from holding.");
                 }
                 catch (Exception ex)
@@ -415,7 +429,6 @@ namespace SymbolDB
                 catch { try { count = gv.imageFileListMatches.finfoList?.Count ?? added; } catch { count = added; } }
             }
 
-            try { _main.SetImageCountText(count.ToString("N0")); } catch { }
             gv.debug.w($"BuildMatchingImagesList: added {added}, total {count}");
             return count;
         }
@@ -464,7 +477,7 @@ namespace SymbolDB
                 FileInfoItem dbItem = null;
                 try
                 {
-                    var repo = _main.Repo;
+                    var repo = _repo;
                     var rt = repo.GetType();
                     var byFpath = rt.GetMethod("GetByFpath",
                         System.Reflection.BindingFlags.Instance |
@@ -511,8 +524,8 @@ namespace SymbolDB
                 catch { gv.slideCount1 = gv.imageFileList1.finfoList?.Count ?? 0; }
             }
 
-            try { _main.SetMaxSlideText($"{gv.slideCount1 - 1}"); } catch { }
-            try { _main.SetImageCountText(gv.slideCount1.ToString("N0")); } catch { }
+            
+            try {  } catch { }
         }
 
         // ── image load helper ────────────────────────────────────────────────

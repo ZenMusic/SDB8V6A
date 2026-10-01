@@ -90,7 +90,7 @@ namespace SymbolDB
             if (_navigateSlideshow != null)
                 _stopSlideshow?.Invoke();
             else
-                _gv.mainWindow?.stopSlideShow();
+                _gv.slideShowMain?.stopSlideShow();
         }
 
         public D1function getDisplayMode() => _mode;
@@ -255,7 +255,7 @@ namespace SymbolDB
                 StopSlideshow();
                 _tags.Clear();
                 AnnotationCanvas.Children.Clear();
-                _gv.mainWindow?.HaveMouse(false);
+                _gv.slideShowMain?.HaveMouse(false);
             }
         }
 
@@ -273,7 +273,7 @@ namespace SymbolDB
                 return;
             }
 
-            if (_gv.mainWindow?.startSlideShow(-1, true, _gv.iShowDirection) == true)
+            if (_gv.slideShowMain?.startSlideShow(-1, true, _gv.iShowDirection) == true)
             {
                 int index = _gv.nextIdx;
                 var list = _gv.imageFileList1.finfoList;
@@ -552,7 +552,7 @@ namespace SymbolDB
                     _navigateSlideshow(1);
                 else
                 {
-                    _gv.mainWindow?.showNextSlide3(_gv.nextIdx, 1);
+                    _gv.slideShowMain?.showNextSlide3(_gv.nextIdx, 1);
                     ShowCurrentFromMain();
                 }
                 e.Handled = true;
@@ -564,7 +564,7 @@ namespace SymbolDB
                     _navigateSlideshow(-1);
                 else
                 {
-                    _gv.mainWindow?.showPreviousSlide();
+                    _gv.slideShowMain?.showPreviousSlide();
                     ShowCurrentFromMain();
                 }
                 e.Handled = true;
@@ -585,7 +585,7 @@ namespace SymbolDB
             _watcher = null;
             Cursor = null;
             if (_navigateSlideshow == null)
-                _gv.mainWindow?.stopSlideShow();
+                _gv.slideShowMain?.stopSlideShow();
         }
 
         private void ShowStatus(string message)

@@ -19,7 +19,7 @@ namespace SymbolDB
 
         GlobalVars gv;
 
-        Main main = null;
+        IApplicationShell main = null;
         Boolean bDisplay1 = false;
         Boolean bDisplayMain = false;
         Boolean bDisplay1image = false;
@@ -56,7 +56,7 @@ namespace SymbolDB
             }
         }
 
-        public void registerMain(Main mw)
+        public void registerMain(IApplicationShell mw)
         {
             if (main != null)
             {

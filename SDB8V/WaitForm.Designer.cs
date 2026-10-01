@@ -1,6 +1,6 @@
 ﻿namespace SymbolDB
 {
-    partial class wait
+    partial class WaitForm
     {
         /// <summary>
         /// Required designer variable.

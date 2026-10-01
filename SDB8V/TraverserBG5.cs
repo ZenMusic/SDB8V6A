@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable annotations
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -168,29 +169,24 @@ namespace SymbolDB
                 gv.bImageFileList2Loaded = true;
 
             _results.Clear();
-            _worker.RunWorkerAsync(args);  // ✅ This passes args to DoWork
-        }
-        public void StartTraversalxxxxx(ARGS args, bool bSubWin, string somePath)
-        {
-            // Store the extensions from args
-            string[] searchExtensions = args.extensions;
 
-            // Use searchExtensions in your file filtering logic
-            // Example:
-            var files = Directory.GetFiles(somePath)
-                .Where(f => searchExtensions.Any(ext =>
-                    f.EndsWith(ext, StringComparison.OrdinalIgnoreCase)))
-                .ToArray();
-            bSubWindow = bSubWin;
-            gv.setCursorHourGlass();
-            if (!bSubWin)
-                gv.bImageFileList1Loaded = true;
-            else
-                gv.bImageFileList2Loaded = true;
-            _results.Clear();
-            _worker.RunWorkerAsync(args);
+            string category = args.searchExtensionCategory;
+
+            if (string.IsNullOrWhiteSpace(category))
+                category = gv.searchExtensionCategoryInUse ?? "images";
+
+            var request = new TraversalRequest(
+                args.dirpath ?? somePath ?? string.Empty,
+                category,
+                args.bTraverseSubdirectories);
+
+            _worker.RunWorkerAsync(request);
         }
 
+        private sealed record TraversalRequest(
+            string Path,
+            string SearchExtensionCategory,
+            bool TraverseSubdirectories);
         public void Cancel()
         {
             _worker.CancelAsync();
@@ -206,7 +202,62 @@ namespace SymbolDB
         }
 
         // ----------------- BackgroundWorker handlers -----------------
-        private void Worker_DoWork(object sender, DoWorkEventArgs e)
+private void Worker_DoWork(object sender, DoWorkEventArgs e)
+{
+    var worker = (BackgroundWorker)sender;
+    gv.setCursorHourGlass();
+
+    if (e.Argument is not TraversalRequest request)
+    {
+        e.Cancel = true;
+        return;
+    }
+
+    string path = request.Path;
+    if (string.IsNullOrWhiteSpace(path))
+    {
+        var completedArgs =
+            new RunWorkerCompletedEventArgs(null, null, false);
+
+        Worker_RunWorkerCompleted(this, completedArgs);
+        return;
+    }
+
+    if (!Directory.Exists(path))
+    {
+        MessageBox.Show(path + " does not exist");
+        e.Cancel = true;
+        return;
+    }
+
+    string category = request.SearchExtensionCategory;
+
+    if (gv.SearchExtensions == null ||
+        !gv.SearchExtensions.TryGetValue(category, out string[] extensionPatterns) ||
+        extensionPatterns == null ||
+        extensionPatterns.Length == 0)
+    {
+        throw new InvalidOperationException(
+            $"No search extensions are configured for category '{category}'.");
+    }
+
+    ExtensionFilter filter = BuildExtensionFilter(extensionPatterns);
+
+    string status = TraverseSinglePass(
+        path,
+        worker,
+        filter,
+        request.TraverseSubdirectories);
+
+    if (status == null || status == "cancel")
+    {
+        e.Cancel = true;
+        return;
+    }
+
+    e.Result = new TraversalResult(status, extensionPatterns);
+}
+        private void Worker_DoWorkxxxxx(object sender, DoWorkEventArgs e)
         {
             var worker = (BackgroundWorker)sender;
             gv.setCursorHourGlass();
@@ -234,10 +285,25 @@ namespace SymbolDB
                 return;
             }
 
-            string[] extensionPatterns = GetExtensionsForArgs(args);
-            ExtensionFilter filter = BuildExtensionFilter(extensionPatterns);
+            //string[] extensionPatterns = GetExtensionsForArgs(args);
+            //ExtensionFilter filter = BuildExtensionFilter(extensionPatterns);
+            string category = args.searchExtensionCategory ?? string.Empty;
 
-            string status = TraverseSinglePass(path, worker, filter);
+            if (gv.SearchExtensions == null ||
+                !gv.SearchExtensions.TryGetValue(category, out string[] extensionPatterns) ||
+                extensionPatterns == null ||
+                extensionPatterns.Length == 0)
+            {
+                throw new InvalidOperationException(
+                    $"No search extensions are configured for category '{category}'.");
+            }
+
+            ExtensionFilter filter = BuildExtensionFilter(extensionPatterns);
+            string status = TraverseSinglePass(
+                path,
+                worker,
+                filter,
+                args.bTraverseSubdirectories);
 
             if (status == null || status == "cancel")
             {
@@ -314,8 +380,105 @@ namespace SymbolDB
         }
 
         // ----------------- Traversal core -----------------
+        private string TraverseSinglePass(
+    string rootPath,
+    BackgroundWorker worker,
+    ExtensionFilter filter,
+    bool traverseSubdirectories)
+        {
+            char sep = Path.DirectorySeparatorChar;
+            string rootFull;
 
-        private string TraverseSinglePass(string rootPath, BackgroundWorker worker, ExtensionFilter filter)
+            try
+            {
+                rootFull = Path.GetFullPath(rootPath).TrimEnd(sep);
+            }
+            catch
+            {
+                rootFull = rootPath ?? string.Empty;
+            }
+
+            int baseDepth = 0;
+            foreach (char character in rootFull)
+            {
+                if (character == sep)
+                    baseDepth++;
+            }
+
+            var options = new EnumerationOptions
+            {
+                // This is the behavior controlled by cbTraverse.
+                RecurseSubdirectories = traverseSubdirectories,
+                IgnoreInaccessible = true,
+                ReturnSpecialDirectories = false,
+                AttributesToSkip =
+                    FileAttributes.ReparsePoint |
+                    FileAttributes.System |
+                    FileAttributes.Temporary
+            };
+
+            try
+            {
+                foreach (string file in Directory.EnumerateFiles(rootPath, "*", options))
+                {
+                    if (worker.CancellationPending)
+                        return "cancel";
+
+                    if (!filter.IsMatch(file))
+                        continue;
+
+                    int level = 0;
+                    long? length = null;
+                    DateTime? lastWriteTime = null;
+
+                    if (bAlsoLoadMetadata)
+                    {
+                        try
+                        {
+                            var fileInfo = new FileInfo(file);
+                            length = fileInfo.Length;
+                            lastWriteTime = fileInfo.LastWriteTime;
+                        }
+                        catch
+                        {
+                            // Keep the file result even when metadata cannot be read.
+                        }
+                    }
+
+                    _results.Add(
+                        new FileResult(
+                            file,
+                            "f",
+                            level,
+                            length,
+                            lastWriteTime));
+
+                    if (gv.bLoadingTraverser2)
+                        gv.slideCount2++;
+                    else
+                        gv.slideCount1++;
+
+                    gv.slideCount0++;
+
+                    if (gv.slideCount0 % 5000 == 0)
+                        worker.ReportProgress(0, gv.slideCount0);
+
+                    if (gv.slideCount0 > gv.iMaxFileCount)
+                        return "maxfiles";
+                }
+            }
+            catch (Exception ex)
+            {
+                gv.debug.w("error scanning ", rootPath + " : " + ex.Message);
+                return null;
+            }
+
+            if (_showProgress)
+                worker.ReportProgress(gv.slideCount0 / 1000, DateTime.Now);
+
+            return rootPath;
+        }
+        private string TraverseSinglePassxxxxxxxx(string rootPath, BackgroundWorker worker, ExtensionFilter filter)
         {
             // Normalize rootPath once to avoid repeated work and to compute a stable base depth.
             char sep = Path.DirectorySeparatorChar;
@@ -428,7 +591,7 @@ namespace SymbolDB
         private string[] GetExtensionsForArgs(ARGS args)
         {
             string[] imageExtensions = new[] { "*.jpg", "*.png", "*.bmp", "*.jpeg" };
-            string[] movieExtensions = new[] { "*.mp4", "*.wmv", "*.mov", "*.webp", "*.avif" };
+            string[] movieExtensions = new[] { "*.mp4", "*.wmv", "*.mov", "*.avif" };
             string[] movieWEBM = new[] { "*.mp4", "*.webm", "*.wmv", "*.mov", "*.webp", "*.avif" };
             string[] midi = new[] { "*.mid", "*.mpe" };
             string[] html = new[] { "*.htm*", "*.html", "*.mhtml" };

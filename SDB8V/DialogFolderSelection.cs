@@ -222,7 +222,7 @@ namespace SymbolDB
                 gv.initParm1List[0].SetTargetDir1(dirPath2);
             else if (rbTargetDir2.Checked)
             {
-                gv.mainWindow.setTargetFolder(dirPath2);
+                gv.mainWindow.SetTargetFolder(dirPath2);
                 gv.initParm1List[0].targetDir2 = dirPath2;
             }
             else if (rbSource4.Checked)
@@ -249,7 +249,7 @@ namespace SymbolDB
         {
             dirPath2 = tbDirPath2.Text;
             SetDirPath();
-            gv.mainWindow.setTargetFolder(dirpath);
+            gv.mainWindow.SetTargetFolder(dirpath);
         }
 
         private void DialogFolderSelection_Load(object sender, EventArgs e)
@@ -280,7 +280,7 @@ namespace SymbolDB
             if (Directory.Exists(tbTargetAssign.Text))
             {
                 gv.initParm1List[0].SetTargetDir1(tbTargetAssign.Text);
-                gv.mainWindow.setTargetFolder(tbTargetAssign.Text);
+                gv.mainWindow.SetTargetFolder(tbTargetAssign.Text);
                 this.Close();
             }
             else

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -1241,7 +1241,7 @@ namespace SymbolDB
                 gv.debug.displayThisImage(pb[lastSelectedPbIdx].Image);
                 int imageIdx = lastSelectedPbIdx + startingImageFileIdx;
                 //  gv.nextIdx = imageIdx;
-                gv.mainWindow.showNextSlideImageFileList1(imageIdx, 0);
+                gv.slideShowMain.showNextSlideImageFileList1(imageIdx, 0);
             }
         }
         // helper to mark picturebox image for deletion (same action as context menu)
@@ -1252,8 +1252,8 @@ namespace SymbolDB
             try
             {
                 // Call the same method used by the context-menu delete handler
-                gv.mainWindow.MarkForDeletionThisId(imageIdx);
-                gv.mainWindow.soundAlert(11);
+                gv.slideShowMain.MarkForDeletionThisId(imageIdx);
+                gv.mainWindow.PlayAlert(11);
 
                 // Quick visual feedback: tint the picturebox background (non-destructive)
                 if (pb[pbIndex] != null)
@@ -1360,7 +1360,7 @@ namespace SymbolDB
             else if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
             {
                 //  MessageBox.Show("Control " + Keys.Control);
-                gv.mainWindow.startSlideShow(idx + startingImageFileIdx, true, 1);
+                gv.slideShowMain.startSlideShow(idx + startingImageFileIdx, true, 1);
                 this.Close();
                 return;
             }
@@ -1506,7 +1506,7 @@ namespace SymbolDB
             }
             else if (keyData == Keys.F5)
             {
-                gv.mainWindow.Activate();
+                gv.mainWindow.ActivateShell();
             }
             else if (keyData == Keys.F6)
             {
@@ -1667,7 +1667,7 @@ namespace SymbolDB
                 case '0':
                     gv.debug.displayThisImage(pb[0].Image);
                     gv.nextIdx = startingImageFileIdx;
-                    gv.mainWindow.showNextSlideImageFileList1(startingImageFileIdx, 1);
+                    gv.slideShowMain.showNextSlideImageFileList1(startingImageFileIdx, 1);
                     this.LoadSet(this.startingImageFileIdx);
                     break;
                 case '9':
@@ -1832,7 +1832,7 @@ namespace SymbolDB
                 gv.debug.displayThisImage(pb[lastSelectedPbIdx].Image);
                 int imageIdx = lastSelectedPbIdx + startingImageFileIdx;
                 //  gv.nextIdx = imageIdx;
-                gv.mainWindow.showNextSlideImageFileList1(imageIdx, 0);
+                gv.slideShowMain.showNextSlideImageFileList1(imageIdx, 0);
             }
         }
         public void MoveToTopAndDisplay1()
@@ -1842,11 +1842,11 @@ namespace SymbolDB
                 gv.debug.displayThisImage(pb[lastSelectedPbIdx].Image);
                 int imageIdx = lastSelectedPbIdx + startingImageFileIdx;
                 //  gv.nextIdx = imageIdx;
-                gv.mainWindow.showNextSlideImageFileList1(imageIdx, 0);
+                gv.slideShowMain.showNextSlideImageFileList1(imageIdx, 0);
                 startingImageFileIdx = imageIdx;
                 hideDisplayFileName();
                 this.LoadSet(this.startingImageFileIdx);
-                gv.mainWindow.SetNextSlideNumber(imageIdx);
+                gv.slideShowMain.SetNextSlideNumber(imageIdx);
             }
 
         }
@@ -1858,7 +1858,7 @@ namespace SymbolDB
                 startingImageFileIdx = imageIdx;
                 hideDisplayFileName();
                 this.LoadSet(this.startingImageFileIdx);
-                gv.mainWindow.SetNextSlideNumber(imageIdx);
+                gv.slideShowMain.SetNextSlideNumber(imageIdx);
             }
         }
 
@@ -1869,8 +1869,8 @@ namespace SymbolDB
             if (lastSelectedPbIdx >= 0)
             {
                 idx = lastSelectedPbIdx + startingImageFileIdx;
-                gv.mainWindow.MarkForDeletionThisId(idx);
-                gv.mainWindow.soundAlert(11);
+                gv.slideShowMain.MarkForDeletionThisId(idx);
+                gv.mainWindow.PlayAlert(11);
             }
 
         }

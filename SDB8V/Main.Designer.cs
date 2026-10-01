@@ -181,6 +181,7 @@
             btInitFile = new System.Windows.Forms.Button();
             btEditNotes = new System.Windows.Forms.Button();
             panelNotes2Exit = new System.Windows.Forms.Panel();
+            btAssignments = new System.Windows.Forms.Button();
             btExitApplication = new System.Windows.Forms.Button();
             b_db = new System.Windows.Forms.Button();
             btVerifyTargetFolder = new System.Windows.Forms.Button();
@@ -262,7 +263,7 @@
             btResizeImage = new System.Windows.Forms.Button();
             btOpenFindMatching = new System.Windows.Forms.Button();
             pbMatch2 = new System.Windows.Forms.PictureBox();
-            btAssignments = new System.Windows.Forms.Button();
+            btTarot = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)dgvFileInfo).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pbNext).BeginInit();
             groupBox1.SuspendLayout();
@@ -2182,6 +2183,18 @@
             panelNotes2Exit.Size = new System.Drawing.Size(599, 51);
             panelNotes2Exit.TabIndex = 315;
             // 
+            // btAssignments
+            // 
+            btAssignments.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btAssignments.BackColor = System.Drawing.Color.LightGray;
+            btAssignments.Location = new System.Drawing.Point(32, 11);
+            btAssignments.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            btAssignments.Name = "btAssignments";
+            btAssignments.Size = new System.Drawing.Size(83, 27);
+            btAssignments.TabIndex = 352;
+            btAssignments.Text = "7.7 9/22";
+            btAssignments.UseVisualStyleBackColor = false;
+            // 
             // btExitApplication
             // 
             btExitApplication.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
@@ -3196,17 +3209,18 @@
             pbMatch2.TabIndex = 351;
             pbMatch2.TabStop = false;
             // 
-            // btAssignments
+            // btTarot
             // 
-            btAssignments.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            btAssignments.BackColor = System.Drawing.Color.LightGray;
-            btAssignments.Location = new System.Drawing.Point(32, 11);
-            btAssignments.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            btAssignments.Name = "btAssignments";
-            btAssignments.Size = new System.Drawing.Size(83, 27);
-            btAssignments.TabIndex = 352;
-            btAssignments.Text = "7.7 9/22";
-            btAssignments.UseVisualStyleBackColor = false;
+            btTarot.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btTarot.BackColor = System.Drawing.Color.Aqua;
+            btTarot.Location = new System.Drawing.Point(970, 574);
+            btTarot.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            btTarot.Name = "btTarot";
+            btTarot.Size = new System.Drawing.Size(83, 26);
+            btTarot.TabIndex = 352;
+            btTarot.Text = "Tarot";
+            btTarot.UseVisualStyleBackColor = false;
+            btTarot.Click += btTarot_Click;
             // 
             // Main
             // 
@@ -3215,6 +3229,7 @@
             AutoScroll = true;
             BackColor = System.Drawing.SystemColors.ActiveCaption;
             ClientSize = new System.Drawing.Size(1904, 1073);
+            Controls.Add(btTarot);
             Controls.Add(pbMatch2);
             Controls.Add(btOpenFindMatching);
             Controls.Add(btResizeImage);
@@ -3649,5 +3664,6 @@
         private System.Windows.Forms.Button btOpenFindMatching;
         private System.Windows.Forms.PictureBox pbMatch2;
         private System.Windows.Forms.Button btAssignments;
+        private System.Windows.Forms.Button btTarot;
     }
 }

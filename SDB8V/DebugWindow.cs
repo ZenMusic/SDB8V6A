@@ -1,4 +1,4 @@
-﻿#nullable disable
+#nullable enable annotations
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace SymbolDB
         Display1? mainDisplay = null;
         
 
-        Main? main = null;
+        IApplicationShell? main = null;
         Boolean bMainDisplayActivate = false;
         Boolean bDisplayMain = false;
 
@@ -38,7 +38,7 @@ namespace SymbolDB
         }
         
 
-        public void registerMain(Main mw)
+        public void registerMain(IApplicationShell mw)
         {
             if (main != null)
             {
@@ -271,7 +271,7 @@ namespace SymbolDB
                     else if (main != null)
                     {
                         if (bDisplayMain)
-                            main.Activate();
+                            main.ActivateShell();
                     }
                 }
         }
@@ -281,9 +281,7 @@ namespace SymbolDB
             bDisplayMain = flg;
             if (bDisplayMain)
             {
-                Point p = gv.mainWindow.Location;
-                p.X = gv.mainWindow.Width + 4 + p.X;
-                this.Location = p;
+                gv.mainWindow.ActivateShell();
             }
         }
 
@@ -361,7 +359,7 @@ namespace SymbolDB
         private void DebugWindow_Activated(object sender, EventArgs e)
         {
             if (bDisplayMain)
-                gv.mainWindow.Focus();
+                gv.mainWindow.FocusShell();
         }
 
         private void cbDisplayImage_CheckedChanged(object sender, EventArgs e)
@@ -449,7 +447,7 @@ namespace SymbolDB
 
         private void btMain_Click(object sender, EventArgs e)
         {
-            gv.mainWindow.Activate();
+            gv.mainWindow.ActivateShell();
         }
 
         public void display2Reset()
@@ -505,7 +503,7 @@ namespace SymbolDB
         }
         private string getNewestImage()
         {
-            string test = gv.mainWindow.ff.getLastUpdatedFile("C:/Users/david/Documents/111");
+            string test = gv.mainWindow.FileFunctions.getLastUpdatedFile("C:/Users/david/Documents/111");
             w("last image ", test);
             this.display1.displayThisImage(test);
             return test;
@@ -517,8 +515,7 @@ namespace SymbolDB
             
         }
 
-        Watcher fileWatcher = null;
-
+        
 
         private void cbMonitor_CheckedChanged(object sender, EventArgs e)
         {

@@ -66,6 +66,14 @@
       <DependentUpon>Display1Wpf.xaml</DependentUpon>
     </Compile>
 
+    <Page Update="MainWpf.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Update="MainWpf.xaml.cs">
+      <DependentUpon>MainWpf.xaml</DependentUpon>
+    </Compile>
+
     <!-- Make the WPF slideshow appear as a designer document in Visual Studio. -->
     <Page Update="SlideShowWpf.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -129,22 +137,13 @@
 
   <ItemGroup>
     <!-- native LibVLC runtime package (match version to LibVLCSharp requirements) -->
-    <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.23" />
-    <PackageReference Include="LibVLCSharp.WinForms" Version="3.9.5" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.3" />
+    <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.24" />
+    <PackageReference Include="LibVLCSharp.WinForms" Version="3.10.1" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.12" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-    <PackageReference Include="System.DirectoryServices" Version="9.0.9" />
-    <PackageReference Include="System.Management" Version="9.0.9" />
-    <PackageReference Include="EntityFramework" Version="6.5.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- Keep explicit reference to mshtml interop if still required by the codebase -->
-    <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft.NET\Primary Interop Assemblies\Microsoft.mshtml.dll</HintPath>
-    </Reference>
+    <PackageReference Include="System.DirectoryServices" Version="10.0.12" />
+    <PackageReference Include="System.Management" Version="10.0.12" />
+    <PackageReference Include="EntityFramework" Version="6.5.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -177,6 +176,15 @@
 
   <ItemGroup><!-- If you need to prune legacy source files or embedded resources, prefer editing the project or using Directory.Build.props -->
     <!-- Legacy explicit <Compile Remove="..."> entries were removed for clarity. Re-add only when necessary. -->
+
+    <!-- Retain the legacy Main form files on disk, but exclude them from the application. -->
+    <Compile Remove="Main.cs" />
+    <Compile Remove="Main.Designer.cs" />
+    <Compile Remove="Main.WpfBridge.cs" />
+    
+    <EmbeddedResource Remove="Main.resx" />
+
+    <Compile Remove="FileWatcher.cs" />
   
     <Compile Remove="FileMetadataHelper.cs" />
   

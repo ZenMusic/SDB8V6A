@@ -9,9 +9,9 @@ using System.Windows.Forms;
 
 namespace SymbolDB
 {
-    public partial class wait : Form
+    public partial class WaitForm : Form
     {
-        public wait()
+        public WaitForm()
         {
             InitializeComponent();
         }

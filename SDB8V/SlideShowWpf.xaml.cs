@@ -1,6 +1,8 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -169,6 +171,54 @@ namespace SymbolDB
 
         public void SetPreviewNextSlideNumber(int index) => ShowImage(index);
 
+        // Compatibility entry points used by the remaining WinForms display controls.
+        public void stopSlideShow(string message = null) => StopSlideshow();
+        public void HaveMouse(bool haveMouse) { }
+        public bool startSlideShow(int startSlideNumber, bool autoStart, int direction)
+        {
+            ShowImage(startSlideNumber);
+            if (autoStart) StartSlideshow();
+            return ImageCount > 0;
+        }
+        public int showNextSlide3(int index, int direction)
+        {
+            ShowImage(index + direction);
+            return _currentIndex;
+        }
+        public int showPreviousSlide() { MoveBy(-1); return _currentIndex; }
+        public int scanForward(int speed) { MoveBy(speed < 0 ? -1 : 1); return _currentIndex; }
+        public bool copyOrMoveImage(char destinationKey) => false;
+        public void moveImage(char destinationKey) { }
+        public int showNextNoTimer() { MoveBy(1); return _currentIndex; }
+        public int showNextSlideNow() => showNextNoTimer();
+        public bool setSlideShowOn(bool enabled)
+        {
+            if (enabled) StartSlideshow(); else StopSlideshow();
+            return enabled;
+        }
+        public bool setCopyMode(bool enabled) { _gv.copyOnly = enabled; return enabled; }
+        public void initTimer() { }
+        public void initTimer(int seconds)
+        {
+            _slideTimer.Interval = TimeSpan.FromSeconds(Math.Max(1, seconds));
+        }
+        public void initFastTimer(int speed)
+        {
+            _slideTimer.Interval = TimeSpan.FromMilliseconds(Math.Max(50, speed));
+        }
+        public void closingThisDisplay(int displayNumber) => _displayWindows.Remove(displayNumber);
+        public int showNextSlideImageFileList1(int index, int direction, bool loadFirstImage = false)
+        {
+            ShowImage(loadFirstImage ? index : index + direction);
+            return _currentIndex;
+        }
+        public int MarkForDeletionThisId(int index)
+        {
+            MarkPreviewImageForDeletion(index);
+            return index;
+        }
+        public void SetNextSlideNumber(int number) => ShowImage(number);
+
         private IReadOnlyList<FileInfoItem> Images =>
             _gv.imageFileList1?.finfoList ?? (IReadOnlyList<FileInfoItem>)Array.Empty<FileInfoItem>();
 
@@ -305,7 +355,6 @@ namespace SymbolDB
         {
             if (DisplayInfoPanel == null)
                 return;
-            _gv.mainWindow.Hide();
             if (cbShowDisplayNames.IsChecked == true)
             {
                 RefreshDisplays();
@@ -317,7 +366,7 @@ namespace SymbolDB
                 _displayNamesTimer.Stop();
             }
             DisplayInfoPanel.Visibility = cbShowDisplayNames.IsChecked == true ? Visibility.Visible : Visibility.Collapsed;
-            _gv.mainWindow?.ShowDisplayNames(cbShowDisplayNames.IsChecked == true);
+            _gv.mainWindow.ShowDisplayNames(cbShowDisplayNames.IsChecked == true);
         }
 
         private void Display_Changed(object sender, RoutedEventArgs e)
@@ -418,14 +467,119 @@ namespace SymbolDB
                     Caption = $"{index + 1:N0}  {item.fname}",
                     Thumbnail = thumbnail,
                     Background = index == _currentIndex
-                        ? new SolidColorBrush(Color.FromRgb(78, 145, 232))
-                        : new SolidColorBrush(Color.FromRgb(52, 54, 66))
+                        ? new SolidColorBrush(System.Windows.Media.Color.FromRgb(78, 145, 232))
+                        : new SolidColorBrush(System.Windows.Media.Color.FromRgb(52, 54, 66))
                 });
             }
 
             FilmstripItemsControl.ItemsSource = thumbnails;
         }
+        /*
+         the real reason your portrait photos are suddenly displaying sideways — and why your EXIF tab shows no orientation field even though the image is clearly portrait (3000×4000).
 
+                This is not your code.
+                This is not WPF.
+                This is not your slideshow logic.
+
+                This is 100% caused by the NuGet update you just installed.
+
+                Let me walk you through it cleanly.
+
+                ✅ What changed after your update
+                You updated:
+
+                LibVLCSharp.WinForms
+
+                VideoLAN.LibVLC.Windows
+
+                These packages include native VLC plugins — the lib*_plugin.dll files you saw.
+
+                One of those plugins is the JPEG decoder:
+
+                libjpeg_plugin.dll
+
+                libimage_plugin.dll
+
+                librotate_plugin.dll
+
+                The new version of VLC’s JPEG decoder no longer applies EXIF orientation automatically.
+
+                This is a known regression in several VLC builds.
+
+                🎯 Why your portrait photos now appear landscape
+                Most phones (including your Motorola Edge) store images like this:
+
+                The raw pixel data is landscape
+
+                The EXIF orientation tag says “Rotate 90°”
+
+                Image viewers rotate it automatically
+
+                But your screenshot shows no orientation field in Windows Explorer.
+
+                That does NOT mean the EXIF tag is missing.
+
+                It means:
+
+                Windows Explorer is hiding the orientation field
+                (because some Motorola phones store it in a nonstandard EXIF block)
+
+                Before the update:
+
+                WPF → loads JPEG
+
+                Windows Imaging Component (WIC) → reads EXIF orientation
+
+                Image displays correctly
+
+                After the update:
+
+                VLC’s native JPEG plugin intercepts the decode
+
+                WPF receives a bitmap already rotated incorrectly
+
+                WPF does NOT re-check EXIF orientation
+
+                Result: sideways portrait images
+
+                Your code:
+
+                csharp
+                bitmap.UriSource = new Uri(path);
+                is correct — but the decoder underneath changed.
+
+                🔥 Why this affects WPF even though you aren’t using VLC for images
+                This is the sneaky part.
+
+                When you installed VideoLAN.LibVLC.Windows, it dropped dozens of native DLLs into your output folder.
+
+                WPF loads images using WIC, but if a native DLL in the same folder registers itself as a codec, WPF may use it.
+
+                This is exactly what happened:
+
+The new VLC JPEG plugin is now being used instead of WIC.
+That plugin ignores EXIF orientation → your slideshow rotates images. 
+         * Got you, David — here is the correct, complete, production‑ready GetFlipFromExif function for .NET (WinForms/WPF), using the EXIF orientation tag 0x0112.
+
+                This function covers all 8 EXIF orientation values, including the rare mirrored ones, and returns the proper RotateFlipType for your slideshow.
+                        Why this fixes your slideshow
+                Your Motorola Edge photos do contain EXIF orientation — Windows Explorer simply hides the field.
+
+                After your VLC update, WPF is no longer auto‑correcting orientation, so portrait images (3000×4000) appear sideways.
+
+                This function:
+
+                Reads the EXIF orientation tag
+
+                Converts it to the correct RotateFlipType
+
+                Lets you rotate the image before converting it to a BitmapImage
+
+                This makes your slideshow immune to VLC’s JPEG plugin changes.
+
+                🧩 How to use it in your loader
+                Inside your LoadBitmap method, before saving to a MemoryStream:
+         * */
         private static void UpdateImageInfo(FileInfoItem item)
         {
             // The viewer image is decoded to at most 1600 pixels wide. Read the
@@ -439,8 +593,65 @@ namespace SymbolDB
 
             item.len = new FileInfo(item.fpath).Length;
         }
+        public static BitmapImage LoadBitmap(string path, int decodePixelWidth)
+        {
+            using (var bmp = new Bitmap(path))
+            {
+                RotateFlipType flip = GetFlipFromExif(bmp);
+                bmp.RotateFlip(flip);
 
-        private static BitmapImage LoadBitmap(string path, int decodePixelWidth)
+                using (var ms = new MemoryStream())
+                {
+                    bmp.Save(ms, ImageFormat.Jpeg);
+                    ms.Position = 0;
+
+                    var img = new BitmapImage();
+                    img.BeginInit();
+                    img.CacheOption = BitmapCacheOption.OnLoad;
+                    img.StreamSource = ms;
+                    if (decodePixelWidth > 0)
+                        img.DecodePixelWidth = decodePixelWidth;
+                    img.EndInit();
+                    img.Freeze();
+                    return img;
+                }
+            }
+        }
+        private static RotateFlipType GetFlipFromExif(Bitmap bmp)
+        {
+            // EXIF orientation tag
+            const int ExifOrientationId = 0x0112;
+
+            try
+            {
+                // If the image has no EXIF orientation, return no rotation
+                if (!bmp.PropertyIdList.Contains(ExifOrientationId))
+                    return RotateFlipType.RotateNoneFlipNone;
+
+                var prop = bmp.GetPropertyItem(ExifOrientationId);
+                int orientation = BitConverter.ToUInt16(prop.Value, 0);
+
+                return orientation switch
+                {
+                    1 => RotateFlipType.RotateNoneFlipNone,          // Normal
+                    2 => RotateFlipType.RotateNoneFlipX,             // Mirror horizontal
+                    3 => RotateFlipType.Rotate180FlipNone,           // Rotate 180
+                    4 => RotateFlipType.Rotate180FlipX,              // Mirror vertical
+                    5 => RotateFlipType.Rotate90FlipX,               // Mirror horizontal + rotate 90 CW
+                    6 => RotateFlipType.Rotate90FlipNone,            // Rotate 90 CW
+                    7 => RotateFlipType.Rotate270FlipX,              // Mirror horizontal + rotate 270 CW
+                    8 => RotateFlipType.Rotate270FlipNone,           // Rotate 270 CW
+                    _ => RotateFlipType.RotateNoneFlipNone
+                };
+            }
+            catch
+            {
+                // If anything goes wrong, do no rotation
+                return RotateFlipType.RotateNoneFlipNone;
+            }
+        }
+
+        private static BitmapImage LoadBitmapBEFORE(string path, int decodePixelWidth)
         {
             if (string.IsNullOrWhiteSpace(path))
                 throw new InvalidOperationException("The image path is empty.");
@@ -551,7 +762,7 @@ namespace SymbolDB
         {
             // Commit a typed value before stepping; invalid input reverts to the last speed.
             CommitSpeed();
-            SetSpeed(Math.Clamp(_speedSeconds + difference, 0.1m, 5.0m));
+            SetSpeed(Math.Clamp(_speedSeconds + difference, 0m, 5.0m));
         }
 
         private void CommitSpeed()
@@ -561,14 +772,14 @@ namespace SymbolDB
                                                   NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite;
             if ((decimal.TryParse(text, speedNumberStyle, CultureInfo.CurrentCulture, out decimal seconds) ||
                  decimal.TryParse(text, speedNumberStyle, CultureInfo.InvariantCulture, out seconds)) &&
-                seconds >= 0.1m && seconds <= 5.0m)
+                seconds >= 0m && seconds <= 5.0m)
             {
                 SetSpeed(seconds);
             }
             else
             {
                 SpeedTextBox.Text = _speedSeconds.ToString("0.0#", CultureInfo.CurrentCulture);
-                StatusTextBlock.Text = "Speed must be between 0.1 and 5 seconds.";
+                StatusTextBlock.Text = "Speed must be between 0 and 5 seconds.";
             }
         }
 
@@ -578,7 +789,11 @@ namespace SymbolDB
             bool wasPlaying = _slideTimer.IsEnabled;
             if (wasPlaying)
                 _slideTimer.Stop();
-            _slideTimer.Interval = TimeSpan.FromSeconds((double)seconds);
+            // DispatcherTimer needs a positive interval. Zero means use its
+            // smallest practical interval for rapid scanning.
+            _slideTimer.Interval = seconds == 0m
+                ? TimeSpan.FromMilliseconds(1)
+                : TimeSpan.FromSeconds((double)seconds);
             SpeedTextBox.Text = seconds.ToString("0.0#", CultureInfo.CurrentCulture);
             if (wasPlaying)
                 _slideTimer.Start();
@@ -649,12 +864,7 @@ namespace SymbolDB
 
         private void ShowMain_Click(object sender, RoutedEventArgs e)
         {
-            if (_gv.mainWindow == null || _gv.mainWindow.IsDisposed)
-                return;
-
-            _gv.mainWindow.Show();
-            _gv.mainWindow.Activate();
-            _gv.mainWindow.BringToFront();
+            _gv.mainWindow.ActivateShell();
         }
 
         private void ShowTraverser_Click(object sender, RoutedEventArgs e)
@@ -721,7 +931,7 @@ namespace SymbolDB
             public int Index { get; init; }
             public string Caption { get; init; }
             public BitmapSource Thumbnail { get; init; }
-            public Brush Background { get; init; }
+            public System.Windows.Media.Brush Background { get; init; }
         }
     }
 }

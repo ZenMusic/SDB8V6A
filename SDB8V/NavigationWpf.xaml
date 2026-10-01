@@ -1,0 +1,46 @@
+<Window x:Class="SymbolDB.NavigationWpf"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Image Navigation"
+        Width="900"
+        Height="650"
+        MinWidth="400"
+        MinHeight="300"
+        WindowStartupLocation="CenterOwner"
+        Background="#171820"
+        Foreground="#E8E8EC">
+    <Border Margin="8"
+            Background="#23242D"
+            BorderBrush="#3A3D49"
+            BorderThickness="1"
+            Padding="6">
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto">
+            <ItemsControl x:Name="ThumbnailItemsControl">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Tag="{Binding Index}"
+                                MouseLeftButtonUp="Picture_Click"
+                                Margin="4"
+                                Padding="3"
+                                Background="#343642"
+                                BorderBrush="#4A4D5A"
+                                BorderThickness="1"
+                                Cursor="Hand">
+                            <Image Source="{Binding Thumbnail}"
+                                   Width="140"
+                                   Height="110"
+                                   Stretch="Uniform"
+                                   ToolTip="{Binding Caption}" />
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Border>
+</Window>

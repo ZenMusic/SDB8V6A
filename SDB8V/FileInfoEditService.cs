@@ -40,10 +40,6 @@ namespace SymbolDB
             {
                 editForm = new EditFileInfo(currentFileInfo, traverser);
             }
-            else if (parentForm is Main mainForm)
-            {
-                editForm = new EditFileInfo(currentFileInfo, mainForm);
-            }
             else
             {
                 editForm = new EditFileInfo(currentFileInfo, null as DialogTraverser);

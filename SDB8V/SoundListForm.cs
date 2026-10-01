@@ -1,4 +1,4 @@
-﻿#nullable disable
+#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -20,8 +20,10 @@ namespace SymbolDB
         public SoundListForm(GlobalVars g, List<SoundItems> soundList)
         {
             InitializeComponent();
-            gv = g;
-            audioPlayer = gv.mainWindow.audio;
+            _gv = g ?? throw new ArgumentNullException(nameof(g));
+            gv = _gv;
+            _audio = gv.mainWindow.Audio;
+            audioPlayer = _audio;
             numVolume.Value = gv.soundVolume;
             _soundList = soundList ?? new List<SoundItems>();
             _audio.Volume = gv.soundVolume;
@@ -219,7 +221,7 @@ namespace SymbolDB
 
         private void numVolume_ValueChanged(object sender, EventArgs e)
         {
-            gv.mainWindow.audio.Volume = (int)numVolume.Value;
+            gv.mainWindow.Audio.Volume = (int)numVolume.Value;
 
         }
     }
